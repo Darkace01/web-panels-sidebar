@@ -1,14 +1,14 @@
 """Draws the extension's PNG icons (needed by the add-ons store listing).
 
 Usage: python scripts/make-icons.py
-Needs Pillow (pip install pillow). Writes extension/icons/icon-{48,96,128}.png.
+Needs Pillow (pip install pillow). Writes shared/icons/icon-{48,96,128}.png.
 """
 from pathlib import Path
 
 from PIL import Image, ImageDraw
 
 SIZE = 512  # drawn big, then scaled down for smooth edges
-OUT = Path(__file__).resolve().parent.parent / "extension" / "icons"
+OUT = Path(__file__).resolve().parent.parent / "shared" / "icons"
 
 
 def lerp(a, b, t):

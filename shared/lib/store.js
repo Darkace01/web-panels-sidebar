@@ -14,19 +14,20 @@ const Store = {
 
   // Known search engines, matched against the default engine's name.
   SEARCH_ENGINES: {
-    google: { home: "https://www.google.com", search: "https://www.google.com/search?q=%s" },
-    duckduckgo: { home: "https://duckduckgo.com", search: "https://duckduckgo.com/?q=%s" },
-    bing: { home: "https://www.bing.com", search: "https://www.bing.com/search?q=%s" },
-    brave: { home: "https://search.brave.com", search: "https://search.brave.com/search?q=%s" },
-    startpage: { home: "https://www.startpage.com", search: "https://www.startpage.com/do/search?q=%s" },
-    ecosia: { home: "https://www.ecosia.org", search: "https://www.ecosia.org/search?q=%s" },
-    qwant: { home: "https://www.qwant.com", search: "https://www.qwant.com/?q=%s" },
-    yahoo: { home: "https://search.yahoo.com", search: "https://search.yahoo.com/search?p=%s" },
-    kagi: { home: "https://kagi.com", search: "https://kagi.com/search?q=%s" },
-    perplexity: { home: "https://www.perplexity.ai", search: "https://www.perplexity.ai/search?q=%s" },
-    wikipedia: { home: "https://www.wikipedia.org", search: "https://www.wikipedia.org/w/index.php?search=%s" },
+    google: { name: "Google", home: "https://www.google.com", search: "https://www.google.com/search?q=%s" },
+    duckduckgo: { name: "DuckDuckGo", home: "https://duckduckgo.com", search: "https://duckduckgo.com/?q=%s" },
+    bing: { name: "Bing", home: "https://www.bing.com", search: "https://www.bing.com/search?q=%s" },
+    brave: { name: "Brave Search", home: "https://search.brave.com", search: "https://search.brave.com/search?q=%s" },
+    startpage: { name: "Startpage", home: "https://www.startpage.com", search: "https://www.startpage.com/do/search?q=%s" },
+    ecosia: { name: "Ecosia", home: "https://www.ecosia.org", search: "https://www.ecosia.org/search?q=%s" },
+    qwant: { name: "Qwant", home: "https://www.qwant.com", search: "https://www.qwant.com/?q=%s" },
+    yahoo: { name: "Yahoo", home: "https://search.yahoo.com", search: "https://search.yahoo.com/search?p=%s" },
+    kagi: { name: "Kagi", home: "https://kagi.com", search: "https://kagi.com/search?q=%s" },
+    perplexity: { name: "Perplexity", home: "https://www.perplexity.ai", search: "https://www.perplexity.ai/search?q=%s" },
+    wikipedia: { name: "Wikipedia", home: "https://www.wikipedia.org", search: "https://www.wikipedia.org/w/index.php?search=%s" },
   },
 
+  // Only Firefox can read the default engine; elsewhere this returns null.
   async defaultEngine() {
     try {
       const engine = (await browser.search.get()).find(e => e.isDefault);
@@ -39,7 +40,7 @@ const Store = {
     }
   },
 
-  // Home page of the user's default search engine (DuckDuckGo if unknown).
+  // Home page of the user's default search engine (a fixed fallback if unknown).
   async searchEngineHome() {
     const e = await this.defaultEngine();
     if (e) {
@@ -50,7 +51,8 @@ const Store = {
         return { name: e.name, url, icon };
       }
     }
-    return { name: "DuckDuckGo", url: this.SEARCH_ENGINES.duckduckgo.home, icon: "" };
+    const fallback = this.SEARCH_ENGINES[Platform.fallbackEngine];
+    return { name: fallback.name, url: fallback.home, icon: "" };
   },
 
   // Turn what was typed in the search bar into an address.
@@ -60,7 +62,7 @@ const Store = {
     const looksLikeAddress = !/\s/.test(t) && (/^https?:\/\//i.test(t) || /^[\w-]+(\.[\w-]+)+(:\d+)?([/?#].*)?$/.test(t) || /^localhost(:\d+)?([/?#].*)?$/i.test(t));
     if (looksLikeAddress) return this.normalizeUrl(t);
     const e = await this.defaultEngine();
-    const template = (e?.key && this.SEARCH_ENGINES[e.key].search) || this.SEARCH_ENGINES.duckduckgo.search;
+    const template = (e?.key && this.SEARCH_ENGINES[e.key].search) || this.SEARCH_ENGINES[Platform.fallbackEngine].search;
     return template.replace("%s", encodeURIComponent(t));
   },
 

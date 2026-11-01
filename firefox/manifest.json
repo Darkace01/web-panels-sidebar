@@ -34,6 +34,7 @@
   ],
   "background": {
     "scripts": [
+      "lib/compat.js",
       "lib/store.js",
       "background.js"
     ]

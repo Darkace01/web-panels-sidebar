@@ -188,9 +188,10 @@ function folderButton(name) {
 }
 
 function renderStage() {
-  // The hint only appears when there are no panels at all.
-  $("empty").classList.toggle("show", S.panels.length === 0);
-  $("empty").textContent = "No panels yet. Use + on the rail to add one.";
+  // Hint: no panels yet, or (when the sidebar can't shrink) no panel open.
+  const noPanels = S.panels.length === 0;
+  $("empty").classList.toggle("show", noPanels || (!Platform.canShrink && !byId(activeId)));
+  $("empty").textContent = noPanels ? "No panels yet. Use + on the rail to add one." : "Pick a panel from the rail.";
   $("refresh").disabled = !byId(activeId);
   updateNav();
   for (const [id, f] of frames) f.el.classList.toggle("on", id === activeId);
@@ -226,16 +227,15 @@ function syncTitle() {
   const collapsed = !byId(activeId);
   if (collapsed === railOnly) return;
   railOnly = collapsed;
-  browser.sidebarAction
-    .setTitle({ title: collapsed ? "Web Panels - rail" : "Web Panels", ...(windowId ? { windowId } : {}) })
-    .catch(() => {});
+  Platform.setRailOnly(collapsed, windowId);
 }
 
 function render() {
   syncTitle();
   document.body.dataset.rail = S.railPosition;
   // Rail-only mode: nothing but the icons (search stays when there are no panels yet).
-  document.body.classList.toggle("collapsed", S.panels.length > 0 && !byId(activeId));
+  // Only where the sidebar can actually shrink; elsewhere a hint fills the gap.
+  document.body.classList.toggle("collapsed", Platform.canShrink && S.panels.length > 0 && !byId(activeId));
   // Only rebuild the rail when its contents change; otherwise just update it.
   const key = JSON.stringify([S.railPosition, S.panels.map(p => [p.id, p.name, p.url, p.icon, p.folder])]);
   if (key !== railKey) {
@@ -321,7 +321,7 @@ function maybeNotify(id, count) {
       type: "basic",
       title: p.name,
       message: count === 1 ? "1 unread" : `${count} unread`,
-      iconUrl: browser.runtime.getURL("icons/icon.svg"),
+      iconUrl: browser.runtime.getURL(Platform.notificationIcon),
     })
     .catch(() => {});
 }

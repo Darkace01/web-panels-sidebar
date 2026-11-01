@@ -2,12 +2,15 @@
   "name": "zen-sidebar",
   "version": "0.1.0",
   "private": true,
-  "description": "Vivaldi/Edge-style web panel sidebar extension for Zen Browser",
+  "description": "Web panel sidebar extension for Zen, Firefox and Chrome",
   "scripts": {
-    "lint": "web-ext lint --source-dir extension",
-    "build": "web-ext build --source-dir extension --overwrite-dest",
-    "start": "web-ext run --source-dir extension --firefox \"C:\\\\Program Files\\\\Zen Browser\\\\zen.exe\" --firefox-profile dev-profile",
-    "sign": "web-ext sign --source-dir extension --channel unlisted"
+    "build": "node scripts/build.mjs",
+    "build:firefox": "node scripts/build.mjs firefox",
+    "build:chrome": "node scripts/build.mjs chrome",
+    "lint": "npm run build:firefox && web-ext lint --source-dir dist/firefox",
+    "start:firefox": "npm run build:firefox && web-ext run --source-dir dist/firefox --firefox \"C:\\Program Files\\Zen Browser\\zen.exe\" --firefox-profile dev-profile",
+    "package": "npm run build && web-ext build --source-dir dist/firefox --artifacts-dir web-ext-artifacts --overwrite-dest && web-ext build --source-dir dist/chrome --artifacts-dir web-ext-artifacts --filename web_panels_sidebar_chrome-{version}.zip --overwrite-dest",
+    "sign": "npm run build:firefox && web-ext sign --source-dir dist/firefox --channel unlisted"
   },
   "devDependencies": {
     "web-ext": "^8.0.0"
