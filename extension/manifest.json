@@ -23,6 +23,8 @@
     "tabs",
     "menus",
     "notifications",
+    "bookmarks",
+    "history",
     "search",
     "webRequest",
     "webRequestBlocking",

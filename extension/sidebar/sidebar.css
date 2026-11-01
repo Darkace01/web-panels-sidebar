@@ -138,7 +138,41 @@ body.collapsed #stage {
   transition: opacity .2s ease, visibility 0s linear .2s;
 }
 
-#search { flex: none; display: flex; align-items: center; gap: 4px; padding: 6px; }
+#search { flex: none; display: flex; align-items: center; gap: 4px; padding: 6px; position: relative; }
+
+#suggest {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% - 2px);
+  left: 6px;
+  right: 6px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: Canvas;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .35);
+  animation: pop-in .14s ease-out;
+  transform-origin: top center;
+}
+#suggest[hidden] { display: none; }
+.sug {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  column-gap: 6px;
+  width: 100%;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+  font: inherit;
+  cursor: pointer;
+}
+.sug:hover, .sug.sel { background: var(--hover); }
+.sug .kind { grid-row: span 2; opacity: .6; align-self: center; }
+.sug .t, .sug .u { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sug .u { font-size: 11px; opacity: .6; }
 .tool {
   flex: none;
   width: 38px;

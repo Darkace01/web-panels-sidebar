@@ -372,16 +372,94 @@ $("refresh").onclick = e => {
 };
 
 // Search bar: navigates the open panel, or makes a panel if none is open.
-$("search").onsubmit = async e => {
-  e.preventDefault();
-  const url = await Store.resolveQuery($("q").value);
-  if (!url) return;
+function navigate(url) {
+  hideSuggest();
   $("q").value = "";
   $("q").blur();
   const f = frames.get(activeId);
   if (f) f.el.src = url;
-  else await Store.addPanel({ url });
+  else Store.addPanel({ url });
+}
+
+$("search").onsubmit = async e => {
+  e.preventDefault();
+  if (sugIdx >= 0 && sugItems[sugIdx]) return navigate(sugItems[sugIdx].url);
+  const url = await Store.resolveQuery($("q").value);
+  if (url) navigate(url);
 };
+
+// ---- suggestions from bookmarks and history --------------------------------
+
+let sugItems = [];
+let sugIdx = -1;
+let sugTimer = 0;
+
+function hideSuggest() {
+  sugItems = [];
+  sugIdx = -1;
+  $("suggest").hidden = true;
+  $("suggest").replaceChildren();
+}
+
+function highlightSuggest() {
+  [...$("suggest").children].forEach((c, i) => c.classList.toggle("sel", i === sugIdx));
+}
+
+async function updateSuggest() {
+  const text = $("q").value.trim();
+  if (!text) return hideSuggest();
+  const [marks, past] = await Promise.all([
+    browser.bookmarks.search(text).catch(() => []),
+    browser.history.search({ text, maxResults: 10 }).catch(() => []),
+  ]);
+  if ($("q").value.trim() !== text) return; // typed on meanwhile
+  const seen = new Set();
+  const items = [];
+  const add = (kind, url, title) => {
+    if (!/^https?:/i.test(url ?? "") || seen.has(url)) return;
+    seen.add(url);
+    items.push({ kind, url, title: title || url });
+  };
+  marks.forEach(b => add("★", b.url, b.title));
+  past.forEach(h => add("↺", h.url, h.title));
+  sugItems = items.slice(0, 6);
+  sugIdx = -1;
+  const box = $("suggest");
+  box.replaceChildren(
+    ...sugItems.map(it =>
+      el(
+        "button",
+        {
+          type: "button",
+          className: "sug",
+          // mousedown, not click: the input's blur would hide the list first
+          onmousedown: e => {
+            e.preventDefault();
+            navigate(it.url);
+          },
+        },
+        el("span", { className: "kind", textContent: it.kind }),
+        el("span", { className: "t", textContent: it.title }),
+        el("span", { className: "u", textContent: it.url.replace(/^https?:\/\/(www\.)?/, "") })
+      )
+    )
+  );
+  box.hidden = sugItems.length === 0;
+}
+
+$("q").addEventListener("input", () => {
+  clearTimeout(sugTimer);
+  sugTimer = setTimeout(updateSuggest, 120);
+});
+$("q").addEventListener("keydown", e => {
+  if (e.key === "Escape") return hideSuggest();
+  if (!sugItems.length || (e.key !== "ArrowDown" && e.key !== "ArrowUp")) return;
+  e.preventDefault();
+  const n = sugItems.length;
+  sugIdx = e.key === "ArrowDown" ? (sugIdx + 1) % n : (sugIdx - 1 + n) % n;
+  highlightSuggest();
+});
+$("q").addEventListener("blur", () => setTimeout(hideSuggest, 120));
 
 // ---- dialogs ---------------------------------------------------------------
 
