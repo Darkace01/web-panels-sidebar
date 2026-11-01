@@ -6,7 +6,9 @@ A Vivaldi / Brave / Edge-style web panel sidebar for Zen Browser, built as a Fir
 
 - Icon rail with site favicons; click an icon to open its panel, click the open one to close the sidebar
 - Add the current page, any website, or right-click a page/link and choose **Add to Zen Sidebar**
-- Mobile-site mode per panel, per-panel zoom, reload, home, open in a new tab
+- Search bar at the top: type a search or an address and the open panel navigates there (uses your default search engine; unrecognised engines fall back to DuckDuckGo)
+- Right-click a rail icon for reload, start page, zoom, open in a new tab, edit, remove
+- Mobile-site mode per panel
 - Drag icons to reorder; rail on the left or right
 - Panels load on first use; idle ones unload after 30 minutes unless marked "Keep loaded"
 - Shortcuts: `Alt+Shift+S` toggle the sidebar, `Alt+Shift+A` add the current page (rebindable in `about:addons` > gear > Manage Extension Shortcuts)

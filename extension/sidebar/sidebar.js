@@ -84,6 +84,13 @@ function renderRail() {
       showMenu(e.clientX, e.clientY, [
         { label: "Edit…", run: () => editDialog(p) },
         { label: "Reload", run: () => reloadPanel(p) },
+        { label: "Back to start page", run: () => goHome(p) },
+        { label: "Open in new tab", run: () => openInTab(p) },
+        "-",
+        { label: "Zoom in", run: () => setZoom(p, 0.1) },
+        { label: "Zoom out", run: () => setZoom(p, -0.1) },
+        { label: "Reset zoom", run: () => setZoom(p, 0) },
+        "-",
         { label: "Unload", run: () => unloadPanel(p.id) },
         "-",
         { label: "Remove", run: () => removePanel(p.id) },
@@ -132,9 +139,6 @@ function renderRail() {
 }
 
 function renderStage() {
-  const p = byId(activeId);
-  $("title").textContent = p?.name ?? "";
-  $("bar").hidden = !p;
   $("empty").hidden = S.panels.length > 0;
   for (const [id, f] of frames) f.el.hidden = id !== activeId;
 }
@@ -206,27 +210,30 @@ async function addCurrentPage() {
   await Store.addPanel({ url: tab.url, name: tab.title, icon: tab.favIconUrl });
 }
 
-function setZoom(delta) {
-  const p = byId(activeId);
-  const f = frames.get(activeId);
-  if (!p || !f) return;
+function setZoom(p, delta) {
   const zoom = delta === 0 ? 1 : Math.min(3, Math.max(0.3, Math.round(((p.zoom || 1) + delta) * 10) / 10));
   Store.set({ panels: S.panels.map(x => (x.id === p.id ? { ...x, zoom } : x)) });
 }
 
-$("reload").onclick = () => {
-  const p = byId(activeId);
-  if (p) reloadPanel(p);
-};
-$("home").onclick = () => {
+function goHome(p) {
+  const f = frames.get(p.id);
+  if (f) f.el.src = p.url;
+}
+
+async function openInTab(p) {
+  browser.tabs.create({ url: await currentUrl(p) });
+}
+
+// Search bar: navigates the open panel, or makes a panel if none is open.
+$("search").onsubmit = async e => {
+  e.preventDefault();
+  const url = await Store.resolveQuery($("q").value);
+  if (!url) return;
+  $("q").value = "";
+  $("q").blur();
   const f = frames.get(activeId);
-  if (f) f.el.src = byId(activeId).url;
-};
-$("zoom-out").onclick = () => setZoom(-0.1);
-$("zoom-in").onclick = () => setZoom(0.1);
-$("open-tab").onclick = async () => {
-  const p = byId(activeId);
-  if (p) browser.tabs.create({ url: await currentUrl(p) });
+  if (f) f.el.src = url;
+  else await Store.addPanel({ url });
 };
 
 // ---- dialogs ---------------------------------------------------------------

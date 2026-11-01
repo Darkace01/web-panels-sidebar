@@ -10,38 +10,56 @@ const Store = {
     seeded: false, // true once the default search panel has been offered
   },
 
-  SEARCH_HOMES: {
-    google: "https://www.google.com",
-    duckduckgo: "https://duckduckgo.com",
-    bing: "https://www.bing.com",
-    brave: "https://search.brave.com",
-    startpage: "https://www.startpage.com",
-    ecosia: "https://www.ecosia.org",
-    qwant: "https://www.qwant.com",
-    yahoo: "https://search.yahoo.com",
-    kagi: "https://kagi.com",
-    perplexity: "https://www.perplexity.ai",
-    wikipedia: "https://www.wikipedia.org",
+  // Known search engines, matched against the default engine's name.
+  SEARCH_ENGINES: {
+    google: { home: "https://www.google.com", search: "https://www.google.com/search?q=%s" },
+    duckduckgo: { home: "https://duckduckgo.com", search: "https://duckduckgo.com/?q=%s" },
+    bing: { home: "https://www.bing.com", search: "https://www.bing.com/search?q=%s" },
+    brave: { home: "https://search.brave.com", search: "https://search.brave.com/search?q=%s" },
+    startpage: { home: "https://www.startpage.com", search: "https://www.startpage.com/do/search?q=%s" },
+    ecosia: { home: "https://www.ecosia.org", search: "https://www.ecosia.org/search?q=%s" },
+    qwant: { home: "https://www.qwant.com", search: "https://www.qwant.com/?q=%s" },
+    yahoo: { home: "https://search.yahoo.com", search: "https://search.yahoo.com/search?p=%s" },
+    kagi: { home: "https://kagi.com", search: "https://kagi.com/search?q=%s" },
+    perplexity: { home: "https://www.perplexity.ai", search: "https://www.perplexity.ai/search?q=%s" },
+    wikipedia: { home: "https://www.wikipedia.org", search: "https://www.wikipedia.org/w/index.php?search=%s" },
+  },
+
+  async defaultEngine() {
+    try {
+      const engine = (await browser.search.get()).find(e => e.isDefault);
+      if (!engine) return null;
+      const lower = engine.name.toLowerCase();
+      const key = Object.keys(this.SEARCH_ENGINES).find(k => lower.includes(k)) ?? null;
+      return { name: engine.name, key, favIconUrl: engine.favIconUrl ?? "" };
+    } catch {
+      return null;
+    }
   },
 
   // Home page of the user's default search engine (DuckDuckGo if unknown).
   async searchEngineHome() {
-    try {
-      const engine = (await browser.search.get()).find(e => e.isDefault);
-      if (engine) {
-        const lower = engine.name.toLowerCase();
-        const key = Object.keys(this.SEARCH_HOMES).find(k => lower.includes(k));
-        let url = key ? this.SEARCH_HOMES[key] : null;
-        if (!url && /^https?:/.test(engine.favIconUrl ?? "")) url = new URL(engine.favIconUrl).origin;
-        if (url) {
-          const icon = /^(https?:|data:image\/)/.test(engine.favIconUrl ?? "") ? engine.favIconUrl : "";
-          return { name: engine.name, url, icon };
-        }
+    const e = await this.defaultEngine();
+    if (e) {
+      let url = e.key ? this.SEARCH_ENGINES[e.key].home : null;
+      if (!url && /^https?:/.test(e.favIconUrl)) url = new URL(e.favIconUrl).origin;
+      if (url) {
+        const icon = /^(https?:|data:image\/)/.test(e.favIconUrl) ? e.favIconUrl : "";
+        return { name: e.name, url, icon };
       }
-    } catch {
-      // fall through to the default
     }
-    return { name: "DuckDuckGo", url: "https://duckduckgo.com", icon: "" };
+    return { name: "DuckDuckGo", url: this.SEARCH_ENGINES.duckduckgo.home, icon: "" };
+  },
+
+  // Turn what was typed in the search bar into an address.
+  async resolveQuery(text) {
+    const t = text.trim();
+    if (!t) return null;
+    const looksLikeAddress = !/\s/.test(t) && (/^https?:\/\//i.test(t) || /^[\w-]+(\.[\w-]+)+(:\d+)?([/?#].*)?$/.test(t) || /^localhost(:\d+)?([/?#].*)?$/i.test(t));
+    if (looksLikeAddress) return this.normalizeUrl(t);
+    const e = await this.defaultEngine();
+    const template = (e?.key && this.SEARCH_ENGINES[e.key].search) || this.SEARCH_ENGINES.duckduckgo.search;
+    return template.replace("%s", encodeURIComponent(t));
   },
 
   async get() {

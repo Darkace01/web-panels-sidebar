@@ -84,27 +84,24 @@ body[data-rail="right"] #rail { border-inline-end: none; border-inline-start: 1p
 /* ---- stage ---- */
 #stage { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
-#bar { flex: none; display: flex; align-items: center; gap: 2px; padding: 4px 6px; border-bottom: 1px solid var(--line); }
-#title { flex: 1; min-width: 0; padding: 0 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
-.tool {
-  width: 26px;
-  height: 26px;
-  padding: 0;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
+#search { flex: none; padding: 6px; }
+#q {
+  width: 100%;
+  padding: 7px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--hover);
   color: inherit;
-  cursor: pointer;
-  font-size: 15px;
+  font: inherit;
 }
-.tool:hover { background: var(--hover); }
+#q:focus { outline: none; border-color: var(--accent); }
 
 #frames { flex: 1; position: relative; min-height: 0; }
 #frames iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: Canvas; }
 #frames iframe[hidden] { display: none; }
 
 #empty { margin: auto; text-align: center; opacity: .6; line-height: 1.6; }
-#empty[hidden], #bar[hidden] { display: none; }
+#empty[hidden] { display: none; }
 
 /* ---- context menu ---- */
 .menu {

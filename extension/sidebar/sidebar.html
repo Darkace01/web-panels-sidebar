@@ -10,14 +10,9 @@
   <div id="app">
     <nav id="rail" aria-label="Panels"></nav>
     <main id="stage">
-      <header id="bar">
-        <span id="title"></span>
-        <button id="reload" class="tool" title="Reload">⟳</button>
-        <button id="home" class="tool" title="Back to the panel's start page">⌂</button>
-        <button id="zoom-out" class="tool" title="Zoom out">−</button>
-        <button id="zoom-in" class="tool" title="Zoom in">+</button>
-        <button id="open-tab" class="tool" title="Open in a new tab">↗</button>
-      </header>
+      <form id="search" role="search">
+        <input id="q" type="search" placeholder="Search or enter address" aria-label="Search or enter address" autocomplete="off" spellcheck="false">
+      </form>
       <div id="frames"></div>
       <p id="empty">No panels yet.<br>Use <b>+</b> on the rail to add one.</p>
     </main>
