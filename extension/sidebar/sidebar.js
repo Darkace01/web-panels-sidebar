@@ -58,7 +58,15 @@ function showMenu(x, y, items) {
 document.addEventListener("mousedown", e => {
   if (menu && !menu.contains(e.target)) closeMenu();
 });
-window.addEventListener("blur", closeMenu);
+window.addEventListener("blur", () => {
+  closeMenu();
+  if (!S.autoClose || !activeId) return;
+  // Focus moving into a panel's own frame keeps document.hasFocus() true;
+  // moving to the page (or another window) does not.
+  setTimeout(() => {
+    if (!document.hasFocus() && activeId && !document.querySelector("dialog[open]")) closeView();
+  }, 150);
+});
 
 // ---- rail ------------------------------------------------------------------
 
@@ -422,6 +430,8 @@ $("edit-form").onsubmit = async e => {
 function settingsDialog() {
   $("s-rail").value = S.railPosition;
   $("s-unload").value = S.unloadAfterMin;
+  $("s-autoclose").checked = S.autoClose;
+  $("s-msg").textContent = "";
   $("settings-dialog").showModal();
 }
 
@@ -431,8 +441,58 @@ $("settings-form").onsubmit = e => {
   Store.set({
     railPosition: $("s-rail").value === "right" ? "right" : "left",
     unloadAfterMin: Math.max(0, Number($("s-unload").value) || 0),
+    autoClose: $("s-autoclose").checked,
   });
   $("settings-dialog").close();
+};
+
+// ---- import / export -------------------------------------------------------
+
+$("s-export").onclick = () => {
+  const panels = S.panels.map(({ id, ...rest }) => rest);
+  const blob = new Blob([JSON.stringify({ zenSidebar: 1, panels }, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  el("a", { href: url, download: "zen-sidebar-panels.json" }).click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  $("s-msg").textContent = `Exported ${panels.length} panel${panels.length === 1 ? "" : "s"}.`;
+};
+
+$("s-import").onclick = () => $("s-file").click();
+
+// Accepts only what we understand; anything else in the file is ignored.
+function cleanImported(raw) {
+  const url = Store.normalizeUrl(raw?.url);
+  if (!url) return null;
+  const icon = typeof raw.icon === "string" && /^(https?:|data:image\/)/.test(raw.icon) ? raw.icon : "";
+  return {
+    id: crypto.randomUUID(),
+    name: String(raw.name ?? "").trim().slice(0, 80) || new URL(url).hostname,
+    url,
+    icon,
+    mobile: raw.mobile !== false,
+    keepAlive: !!raw.keepAlive,
+    notify: !!raw.notify,
+    dark: !!raw.dark,
+    css: typeof raw.css === "string" ? raw.css.slice(0, 5000) : "",
+    folder: typeof raw.folder === "string" ? raw.folder.trim().slice(0, 40) : "",
+    zoom: Math.min(3, Math.max(0.3, Number(raw.zoom) || 1)),
+  };
+}
+
+$("s-file").onchange = async e => {
+  const file = e.target.files[0];
+  e.target.value = "";
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    const incoming = (Array.isArray(data) ? data : data.panels ?? []).map(cleanImported).filter(Boolean);
+    const known = new Set(S.panels.map(p => p.url));
+    const fresh = incoming.filter(p => !known.has(p.url) && known.add(p.url));
+    if (fresh.length) await Store.set({ panels: [...S.panels, ...fresh] });
+    $("s-msg").textContent = `Imported ${fresh.length}, skipped ${incoming.length - fresh.length} already present.`;
+  } catch {
+    $("s-msg").textContent = "That file isn't a valid panel export.";
+  }
 };
 
 // ---- storage sync ----------------------------------------------------------
@@ -459,6 +519,11 @@ browser.storage.onChanged.addListener(changes => {
     if (changes[key]) S[key] = changes[key].newValue ?? Store.DEFAULTS[key];
   }
   if (changes.panels) syncFrames(changes.panels.oldValue ?? []);
+  const req = changes.openRequest?.newValue;
+  if (req && byId(req.id)) {
+    openPanel(req.id); // from a keyboard shortcut
+    return;
+  }
   if (changes.lastId && S.lastId && S.lastId !== activeId && byId(S.lastId)) {
     openPanel(S.lastId);
   } else {

@@ -126,6 +126,15 @@ browser.menus.onClicked.addListener(async (info, tab) => {
 });
 
 browser.commands.onCommand.addListener(async command => {
+  const slot = /^open-panel-([1-9])$/.exec(command);
+  if (slot) {
+    browser.sidebarAction.open();
+    const { panels } = await Store.get();
+    const p = panels[Number(slot[1]) - 1];
+    // lastId covers a sidebar that is still starting; openRequest wakes one that is open.
+    if (p) await Store.set({ lastId: p.id, openRequest: { id: p.id, t: Date.now() } });
+    return;
+  }
   if (command !== "add-current-page") return;
   browser.sidebarAction.open();
   const [tab] = await browser.tabs.query({ active: true, currentWindow: true });

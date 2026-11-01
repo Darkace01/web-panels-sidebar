@@ -7,10 +7,17 @@
     "gecko": {
       "id": "zen-sidebar@beeresoftwares.com",
       "strict_min_version": "142.0",
-      "data_collection_permissions": { "required": ["none"] }
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
     }
   },
-  "icons": { "48": "icons/icon.svg", "96": "icons/icon.svg" },
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  },
   "permissions": [
     "storage",
     "tabs",
@@ -21,16 +28,31 @@
     "webRequestBlocking",
     "<all_urls>"
   ],
-  "background": { "scripts": ["lib/store.js", "background.js"] },
+  "background": {
+    "scripts": [
+      "lib/store.js",
+      "background.js"
+    ]
+  },
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["content/opener.js"],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/opener.js"
+      ],
       "run_at": "document_start"
     },
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["content/panel-agent.js"],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/panel-agent.js"
+      ],
       "all_frames": true,
       "run_at": "document_start"
     }
@@ -43,12 +65,70 @@
   },
   "commands": {
     "_execute_sidebar_action": {
-      "suggested_key": { "default": "Alt+Shift+S" },
+      "suggested_key": {
+        "default": "Alt+Shift+S"
+      },
       "description": "Toggle Zen Sidebar"
     },
     "add-current-page": {
-      "suggested_key": { "default": "Alt+Shift+A" },
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      },
       "description": "Add the current page as a panel"
+    },
+    "open-panel-1": {
+      "suggested_key": {
+        "default": "Alt+Shift+1"
+      },
+      "description": "Open panel 1"
+    },
+    "open-panel-2": {
+      "suggested_key": {
+        "default": "Alt+Shift+2"
+      },
+      "description": "Open panel 2"
+    },
+    "open-panel-3": {
+      "suggested_key": {
+        "default": "Alt+Shift+3"
+      },
+      "description": "Open panel 3"
+    },
+    "open-panel-4": {
+      "suggested_key": {
+        "default": "Alt+Shift+4"
+      },
+      "description": "Open panel 4"
+    },
+    "open-panel-5": {
+      "suggested_key": {
+        "default": "Alt+Shift+5"
+      },
+      "description": "Open panel 5"
+    },
+    "open-panel-6": {
+      "suggested_key": {
+        "default": "Alt+Shift+6"
+      },
+      "description": "Open panel 6"
+    },
+    "open-panel-7": {
+      "suggested_key": {
+        "default": "Alt+Shift+7"
+      },
+      "description": "Open panel 7"
+    },
+    "open-panel-8": {
+      "suggested_key": {
+        "default": "Alt+Shift+8"
+      },
+      "description": "Open panel 8"
+    },
+    "open-panel-9": {
+      "suggested_key": {
+        "default": "Alt+Shift+9"
+      },
+      "description": "Open panel 9"
     }
   }
 }

@@ -55,6 +55,13 @@
       <label>Unload idle panels after (minutes, 0 = never)
         <input id="s-unload" type="number" min="0" step="1">
       </label>
+      <label class="row"><input id="s-autoclose" type="checkbox"> Close the panel view when I click the page</label>
+      <div class="actions left">
+        <button type="button" id="s-export">Export panels</button>
+        <button type="button" id="s-import">Import panels…</button>
+        <input id="s-file" type="file" accept="application/json,.json" hidden>
+      </div>
+      <p id="s-msg" class="note" role="status"></p>
       <div class="actions">
         <button type="button" id="settings-cancel">Cancel</button>
         <button type="submit" class="primary">Save</button>

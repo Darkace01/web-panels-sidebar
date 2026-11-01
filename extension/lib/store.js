@@ -8,6 +8,8 @@ const Store = {
     railPosition: "right", // "left" | "right"
     unloadAfterMin: 30, // 0 = never unload idle panels
     seeded: false, // true once the default search panel has been offered
+    autoClose: false, // close the panel view when the page is clicked
+    openRequest: null, // {id, t}: ask every sidebar to open a panel (shortcuts)
   },
 
   // Known search engines, matched against the default engine's name.
