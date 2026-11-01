@@ -1,4 +1,4 @@
-# Zen Sidebar
+# Web Panels Sidebar for Zen
 
 A Vivaldi / Brave / Edge-style web panel sidebar for Zen Browser, built as a Firefox extension (`sidebar_action`). Zen no longer ships web panels, so this adds them back without any userChrome loader.
 
@@ -6,7 +6,7 @@ A Vivaldi / Brave / Edge-style web panel sidebar for Zen Browser, built as a Fir
 
 **Panels**
 - Icon rail with site favicons; click an icon to open its panel, click the open one to close just that view (the sidebar stays)
-- Add the current page, any website, or right-click a tab, page or link and choose **Send to Zen Sidebar**
+- Add the current page, any website, or right-click a tab, page or link and choose **Send to Web Panels**
 - Drop a link on the rail to add it, or on an icon to open it in that panel
 - Drag icons to reorder; group panels into **folders** (set a folder name when editing a panel)
 - Rail on the left or right
@@ -60,7 +60,7 @@ Then open the `.xpi` from `web-ext-artifacts/` in Zen.
 
 The extension can't move or resize Firefox's sidebar itself; those are browser settings.
 
-- **The "Zen Sidebar" title bar, the side, the width and the background** are set with profile files in `dev-profile/`: a hidden `#sidebar-header`, a default width of about 25% of the window, `sidebar.position_start=false`, and a transparent sidebar so Zen's tab-area background shows through. `npm run start` uses them automatically. For your normal profile, close Zen and run `.\scripts\apply-ui-tweaks.ps1`, then restart Zen. Re-run it after pulling updates; it replaces its own block.
+- **The "Web Panels" title bar, the side, the width and the background** are set with profile files in `dev-profile/`: a hidden `#sidebar-header`, a default width of about 25% of the window, `sidebar.position_start=false`, and a transparent sidebar so Zen's tab-area background shows through. `npm run start` uses them automatically. For your normal profile, close Zen and run `.\scripts\apply-ui-tweaks.ps1`, then restart Zen. Re-run it after pulling updates; it replaces its own block.
 - With those tweaks, closing a panel's view shrinks the sidebar to just the icon rail, and opening a panel expands it again. Without them, the sidebar keeps its width.
 - The tweaks fix the width at about 25% of the window (320 to 480px), so dragging the edge won't resize it.
 

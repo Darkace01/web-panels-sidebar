@@ -1,5 +1,5 @@
 /* zen-sidebar:begin */
-/* Hide the browser's own "Zen Sidebar" title bar, default to ~1/4 width,
+/* Hide the browser's own "Web Panels" title bar, default to ~1/4 width,
    shrink to just the icon rail when no panel is open, and let Zen's tab
    background show through so the sidebar matches the tab area. */
 #sidebar-header {
@@ -21,7 +21,7 @@
   border-radius: 0 !important;
 }
 
-/* The extension sets its title to "Zen Sidebar - rail" while no panel is open */
+/* The extension sets its title to "Web Panels - rail" while no panel is open */
 #sidebar-box:has(#sidebar-title[value$="- rail"]) {
   width: 47px !important;
   min-width: 47px !important;

@@ -227,7 +227,7 @@ function syncTitle() {
   if (collapsed === railOnly) return;
   railOnly = collapsed;
   browser.sidebarAction
-    .setTitle({ title: collapsed ? "Zen Sidebar - rail" : "Zen Sidebar", ...(windowId ? { windowId } : {}) })
+    .setTitle({ title: collapsed ? "Web Panels - rail" : "Web Panels", ...(windowId ? { windowId } : {}) })
     .catch(() => {});
 }
 

@@ -1,6 +1,6 @@
 "use strict";
 
-// Runs in every web frame. It stays silent unless the Zen Sidebar page (a
+// Runs in every web frame. It stays silent unless the extension's sidebar page (a
 // moz-extension:// page that is this frame's direct parent) says hello first;
 // then it reports its address, title and unread count to that page, applies
 // per-panel dark mode / custom CSS, and obeys back/forward/reload requests.

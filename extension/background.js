@@ -110,7 +110,7 @@ browser.runtime.onMessage.addListener(msg => {
 // "tab" is the tab strip's right-click menu (needs the "menus" permission).
 browser.menus.create({
   id: "add-page",
-  title: "Send to Zen Sidebar",
+  title: "Send to Web Panels",
   contexts: ["page", "link", "tab"],
 });
 

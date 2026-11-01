@@ -2,7 +2,7 @@
 
 ## Project
 
-Zen Sidebar: a Firefox/Zen WebExtension (Manifest V2) that adds a Vivaldi/Edge-style web panel sidebar using `sidebar_action`. Zen 1.24b has no built-in web panels, and CSS-only mods or userChrome scripts were tried and dropped (the extension needs no loader and survives updates).
+Web Panels Sidebar for Zen (repo `zen-sidebar`): a Firefox/Zen WebExtension (Manifest V2) that adds a Vivaldi/Edge-style web panel sidebar using `sidebar_action`. Zen 1.24b has no built-in web panels, and CSS-only mods or userChrome scripts were tried and dropped (the extension needs no loader and survives updates).
 
 ## Layout
 
@@ -20,7 +20,7 @@ Zen Sidebar: a Firefox/Zen WebExtension (Manifest V2) that adds a Vivaldi/Edge-s
 
 - Each panel is a lazily created `<iframe>` in the sidebar page; hidden (not destroyed) when inactive so audio keeps playing. Idle unload via interval in `sidebar.js`.
 - Sidebar <-> agent protocol: messages are `{__zs: true, type, ...}`. The sidebar only trusts `state` messages whose `event.source` is one of its own panel iframes; the agent only trusts messages whose source is its parent and whose origin starts with `moz-extension://`. Back/forward state is rebuilt in the sidebar from the URLs the agent reports (`onState`).
-- `dev-profile/` (userChrome.css + user.js) styles Zen's own `#sidebar-box`; the extension signals "rail only" by setting its sidebar title to `Zen Sidebar - rail`, which the CSS matches. `scripts/apply-ui-tweaks.ps1` replaces the `zen-sidebar:begin/end` block in a real profile.
+- `dev-profile/` (userChrome.css + user.js) styles Zen's own `#sidebar-box`; the extension signals "rail only" by setting its sidebar title to `Web Panels - rail`, which the CSS matches. `scripts/apply-ui-tweaks.ps1` replaces the `zen-sidebar:begin/end` block in a real profile.
 - `background.js` `panelFrameUrl()` uses `frameAncestors` to decide whether a request belongs to a panel frame, and which one; panel is matched to config by hostname (`panelForHost`).
 - State lives in `browser.storage.local` (`Store.DEFAULTS` keys); all windows' sidebars sync via `storage.onChanged`.
 - `sidebarAction.open()` must be called synchronously in a user-action handler: keep it before any `await` in background handlers.

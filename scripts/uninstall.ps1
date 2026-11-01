@@ -1,4 +1,4 @@
-# Removes Zen Sidebar and the fx-autoconfig loader from Zen.
+# Removes the old Zen Sidebar script and the fx-autoconfig loader from Zen.
 # Run from an ELEVATED PowerShell with Zen closed.
 # Usage: .\scripts\uninstall.ps1 [-ZenDir <path>] [-ProfilePath <path>] [-KeepLoader]
 param(
