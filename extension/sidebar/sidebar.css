@@ -30,7 +30,7 @@ body[data-rail="right"] #app { flex-direction: row-reverse; }
   align-items: center;
   gap: 6px;
   padding: 8px 0;
-  overflow-y: auto;
+  overflow: hidden auto;
   scrollbar-width: none;
   border-inline-end: 1px solid var(--line);
 }
@@ -41,11 +41,11 @@ body[data-rail="right"] #rail { border-inline-end: none; border-inline-start: 1p
 .btn {
   position: relative;
   flex: none;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   padding: 0;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   background: transparent;
   color: inherit;
   cursor: pointer;
@@ -66,14 +66,14 @@ body[data-rail="right"] #rail { border-inline-end: none; border-inline-start: 1p
   background: var(--accent);
   transition: inset-block .22s cubic-bezier(.3, 1.4, .5, 1);
 }
-body[data-rail="right"] .btn::before { left: -6px; }
-body[data-rail="left"] .btn::before { right: -6px; }
-.btn.active::before { inset-block: 9px; }
+body[data-rail="right"] .btn::before { left: -5px; }
+body[data-rail="left"] .btn::before { right: -5px; }
+.btn.active::before { inset-block: 10px; }
 .btn.dragover { outline: 2px dashed var(--line); }
 .btn.loaded::after {
   content: "";
   position: absolute;
-  bottom: 2px;
+  bottom: 3px;
   width: 4px;
   height: 4px;
   border-radius: 50%;
@@ -83,16 +83,16 @@ body[data-rail="left"] .btn::before { right: -6px; }
 }
 .btn .letter {
   grid-area: 1 / 1;
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
   display: grid;
   place-items: center;
   font-weight: 600;
   text-transform: uppercase;
   background: var(--active);
 }
-.btn img { grid-area: 1 / 1; width: 20px; height: 20px; border-radius: 4px; display: none; }
+.btn img { grid-area: 1 / 1; width: 22px; height: 22px; border-radius: 5px; display: none; }
 .btn.has-icon img { display: block; }
 .btn.has-icon .letter { visibility: hidden; }
 .btn.add { font-size: 22px; font-weight: 300; opacity: .7; }
