@@ -30,7 +30,7 @@ Everything the stores ask for is in this repo:
    npm run lint
    npm run package
    ```
-   This writes two zips into `web-ext-artifacts/`: `web_panels_sidebar_for_zen-<version>.zip` (Firefox) and `web_panels_sidebar_chrome-<version>.zip` (Chrome).
+   This writes two zips into `web-ext-artifacts/`: `web_panels_sidebar-<version>.zip` (Firefox) and `web_panels_sidebar_chrome-<version>.zip` (Chrome).
 
 ## Firefox / Zen: addons.mozilla.org
 
@@ -38,7 +38,7 @@ Everything the stores ask for is in this repo:
 
 1. Make an account at https://addons.mozilla.org/developers/ and turn on two-factor authentication.
 2. **Submit a New Add-on**, choose **On this site**, upload the Firefox zip, and answer "No" to the source-code question (nothing is minified or bundled; the uploaded files are the source).
-3. Fill the listing from `store/listing.md` (use the "Firefox / Zen" name), upload the icon and screenshots, paste the privacy policy and the reviewer notes.
+3. Fill the listing from `store/listing.md`, upload the icon and screenshots, paste the privacy policy and the reviewer notes.
 4. Submit. Extensions with all-sites access and blocking `webRequest` get a manual review that can take days; answer reviewer questions with the notes in `store/listing.md`.
 
 ### Option B: sign it for yourself only (not listed)
@@ -59,7 +59,7 @@ Release builds of Zen and Firefox only keep signed extensions, so one of these t
 
 1. Register as a developer at https://chrome.google.com/webstore/devconsole (one-time fee) and turn on two-factor authentication.
 2. **Add new item** and upload the Chrome zip.
-3. Fill the **Store listing** tab from `store/listing.md` (use the "Chrome" name), upload the 128px icon and the screenshots.
+3. Fill the **Store listing** tab from `store/listing.md`, upload the 128px icon and the screenshots.
 4. Fill the **Privacy** tab: paste the "Single purpose" and the permission justifications from the "Chrome Web Store extras" section of `store/listing.md`, certify that no user data is collected, and link the privacy policy (host `PRIVACY.md` somewhere public, such as the repository page).
 5. Submit for review. Broad host access plus header removal usually means a longer review.
 

@@ -4,14 +4,6 @@ Copy each block into the matching field when you submit. Firefox (addons.mozilla
 
 ## Name (max 50 characters)
 
-Firefox / Zen:
-
-```
-Web Panels Sidebar for Zen
-```
-
-Chrome (the manifest uses this name):
-
 ```
 Web Panels Sidebar
 ```
@@ -25,7 +17,7 @@ Pin your favourite sites to an icon rail and open them in a panel beside the pag
 ## Description
 
 ```
-Web Panels Sidebar for Zen brings Vivaldi / Edge / Brave-style web panels to Zen Browser. Keep chat, music, email, notes or any website one click away in a panel next to the page you are reading.
+Web Panels Sidebar brings Vivaldi / Edge / Brave-style web panels to Zen Browser and Firefox (and Chrome). Keep chat, music, email, notes or any website one click away in a panel next to the page you are reading.
 
 PANELS
 • An icon rail of your pinned sites: click to open, click again to close the view

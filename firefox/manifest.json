@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Web Panels Sidebar for Zen",
+  "name": "Web Panels Sidebar",
   "version": "0.1.0",
   "description": "Pin sites to an icon rail and open them beside your page, like Vivaldi and Edge web panels. Mobile view, unread badges, folders.",
   "browser_specific_settings": {
