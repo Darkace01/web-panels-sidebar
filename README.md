@@ -32,6 +32,19 @@ npm run sign
 
 Then open the `.xpi` from `web-ext-artifacts/` in Zen.
 
+## Sidebar side and width
+
+The extension can't move or resize Firefox's sidebar itself; those are browser settings.
+
+- **Right side:** the icon rail defaults to the right edge of the sidebar, and `npm run start` launches Zen with `sidebar.position_start=false`. In your normal profile, set `sidebar.position_start` to `false` in `about:config`.
+- **Width:** drag the sidebar's edge once and Zen remembers it. To force roughly a quarter of the window, add this to `chrome/userChrome.css` in your profile (needs `toolkit.legacyUserProfileCustomizations.stylesheets` = `true` in `about:config`):
+
+```css
+#sidebar-box { width: 25vw !important; min-width: 320px; max-width: 480px; }
+```
+
+On first run the sidebar opens with one panel: the home page of your default search engine.
+
 ## Limitations
 
 - Sites load in iframes. The extension strips `X-Frame-Options` / CSP `frame-ancestors` and rewrites cookies to `SameSite=None; Secure` so most sites work, but some will still refuse or break.

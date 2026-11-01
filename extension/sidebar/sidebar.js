@@ -341,6 +341,12 @@ setInterval(() => {
 
 (async () => {
   S = await Store.get();
+  if (!S.seeded) {
+    // Claim first so a second window doesn't seed again.
+    await Store.set({ seeded: true });
+    if (!S.panels.length) await Store.addPanel(await Store.searchEngineHome());
+    S = await Store.get();
+  }
   const first = byId(S.lastId) ?? S.panels[0];
   if (first) openPanel(first.id);
   else render();

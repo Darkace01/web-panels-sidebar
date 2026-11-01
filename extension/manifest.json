@@ -15,6 +15,7 @@
     "storage",
     "tabs",
     "contextMenus",
+    "search",
     "webRequest",
     "webRequestBlocking",
     "<all_urls>"
