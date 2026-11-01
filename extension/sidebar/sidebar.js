@@ -140,10 +140,10 @@ function renderRail() {
 }
 
 function renderStage() {
-  $("empty").classList.toggle("show", !byId(activeId));
-  $("empty").textContent = S.panels.length
-    ? "Pick a panel from the rail."
-    : "No panels yet. Use + on the rail to add one.";
+  // The hint only appears when there are no panels at all.
+  $("empty").classList.toggle("show", S.panels.length === 0);
+  $("empty").textContent = "No panels yet. Use + on the rail to add one.";
+  $("refresh").disabled = !byId(activeId);
   for (const [id, f] of frames) f.el.classList.toggle("on", id === activeId);
 }
 
@@ -264,6 +264,16 @@ function goHome(p) {
 async function openInTab(p) {
   browser.tabs.create({ url: await currentUrl(p) });
 }
+
+$("refresh").onclick = e => {
+  const p = byId(activeId);
+  if (!p) return;
+  reloadPanel(p);
+  const btn = e.currentTarget;
+  btn.classList.remove("spin");
+  void btn.offsetWidth;
+  btn.classList.add("spin");
+};
 
 // Search bar: navigates the open panel, or makes a panel if none is open.
 $("search").onsubmit = async e => {

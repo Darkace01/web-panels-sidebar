@@ -106,9 +106,28 @@ body[data-rail="left"] .btn::before { right: -6px; }
 /* ---- stage ---- */
 #stage { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
-#search { flex: none; padding: 6px; }
+#search { flex: none; display: flex; align-items: center; gap: 4px; padding: 6px; }
+.tool {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color .18s ease, opacity .18s ease, transform .12s ease;
+}
+.tool:hover:not(:disabled) { background: var(--hover); }
+.tool:active:not(:disabled) { transform: scale(.9); }
+.tool:disabled { opacity: .35; cursor: default; }
+.tool.spin { animation: spin .5s ease; }
+@keyframes spin { to { transform: rotate(360deg); } }
 #q {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   padding: 7px 12px;
   border: 1px solid transparent;
   border-radius: 999px;
