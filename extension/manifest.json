@@ -15,6 +15,7 @@
     "storage",
     "tabs",
     "menus",
+    "notifications",
     "search",
     "webRequest",
     "webRequestBlocking",

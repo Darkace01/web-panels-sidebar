@@ -76,7 +76,11 @@ function renderRail() {
     const img = el("img", { alt: "", src: p.icon || originOf(p.url) + "/favicon.ico" });
     img.onload = () => btn.classList.add("has-icon");
     img.onerror = () => btn.classList.remove("has-icon");
-    btn.append(el("span", { className: "letter", textContent: [...(p.name || "?")][0] }), img);
+    btn.append(
+      el("span", { className: "letter", textContent: [...(p.name || "?")][0] }),
+      img,
+      el("span", { className: "badge" })
+    );
 
     // Clicking the open panel's icon closes its view; the sidebar stays.
     btn.onclick = () => (p.id === activeId ? closeView() : openPanel(p.id));
@@ -153,6 +157,10 @@ function refreshRail() {
   for (const btn of $("rail").querySelectorAll(".btn[data-id]")) {
     btn.classList.toggle("active", btn.dataset.id === activeId);
     btn.classList.toggle("loaded", frames.has(btn.dataset.id));
+    const n = frames.get(btn.dataset.id)?.badge ?? 0;
+    const badge = btn.querySelector(".badge");
+    badge.textContent = n > 99 ? "99+" : String(n);
+    btn.classList.toggle("has-badge", n > 0);
   }
 }
 
@@ -240,8 +248,35 @@ function onState(id, f, d) {
     f.url = d.url;
   }
   f.title = String(d.title ?? "").slice(0, 200);
+  const badge = Math.max(0, Math.min(9999, Number(d.badge) || 0));
+  if (badge !== f.badge) {
+    const increased = badge > f.badge;
+    f.badge = badge;
+    refreshRail();
+    if (increased) maybeNotify(id, badge);
+  }
   if (id === activeId) updateNav();
 }
+
+// Desktop notification when a panel you aren't looking at gets more unread items.
+function maybeNotify(id, count) {
+  const p = byId(id);
+  if (!p?.notify) return;
+  const looking = id === activeId && document.hasFocus() && !document.hidden;
+  if (looking) return;
+  browser.notifications
+    .create(`zs-${id}`, {
+      type: "basic",
+      title: p.name,
+      message: count === 1 ? "1 unread" : `${count} unread`,
+      iconUrl: browser.runtime.getURL("icons/icon.svg"),
+    })
+    .catch(() => {});
+}
+
+browser.notifications.onClicked.addListener(nid => {
+  if (nid.startsWith("zs-")) openPanel(nid.slice(3));
+});
 
 function updateNav() {
   const f = frames.get(activeId);
@@ -351,6 +386,7 @@ function editDialog(p) {
   $("f-url").value = p?.url ?? "";
   $("f-mobile").checked = p ? !!p.mobile : true;
   $("f-keep").checked = !!p?.keepAlive;
+  $("f-notify").checked = !!p?.notify;
   $("edit-error").textContent = "";
   $("edit-dialog").showModal();
   (p ? $("f-name") : $("f-url")).focus();
@@ -369,6 +405,7 @@ $("edit-form").onsubmit = async e => {
     url,
     mobile: $("f-mobile").checked,
     keepAlive: $("f-keep").checked,
+    notify: $("f-notify").checked,
   };
   $("edit-dialog").close();
   if (editing) {

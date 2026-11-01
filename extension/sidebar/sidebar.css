@@ -98,6 +98,25 @@ body[data-rail="left"] .btn::before { right: -5px; }
 .btn.has-icon .letter { visibility: hidden; }
 .btn.add { font-size: 22px; font-weight: 300; opacity: .7; }
 
+.badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: #e5484d;
+  color: #fff;
+  font: 600 10px/16px system-ui, sans-serif;
+  text-align: center;
+  opacity: 0;
+  transform: scale(.4);
+  pointer-events: none;
+  transition: opacity .18s ease, transform .2s cubic-bezier(.3, 1.4, .5, 1);
+}
+.btn.has-badge .badge { opacity: 1; transform: none; }
+
 /* When the sidebar is shrunk to just the rail, show only the rail */
 @media (max-width: 90px) {
   #stage { display: none; }
