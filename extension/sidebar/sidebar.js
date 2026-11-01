@@ -505,6 +505,35 @@ $("q").addEventListener("keydown", e => {
 });
 $("q").addEventListener("blur", () => setTimeout(hideSuggest, 120));
 
+// ---- dropping a link on the rail -------------------------------------------
+// Drop on an icon to open the link in that panel, anywhere else to add a panel.
+
+const isUrlDrag = e =>
+  !e.dataTransfer.types.includes("text/x-zs") &&
+  (e.dataTransfer.types.includes("text/uri-list") || e.dataTransfer.types.includes("text/plain"));
+
+$("rail").addEventListener("dragover", e => {
+  if (isUrlDrag(e)) e.preventDefault();
+});
+$("rail").addEventListener("drop", e => {
+  if (!isUrlDrag(e)) return;
+  e.preventDefault();
+  const raw = (e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain"))
+    .split("\n")
+    .find(line => line.trim() && !line.startsWith("#"));
+  const url = Store.normalizeUrl(raw);
+  if (!url) return;
+  const btn = e.target.closest(".btn[data-id]");
+  const p = btn && byId(btn.dataset.id);
+  if (p) {
+    openPanel(p.id);
+    const f = frames.get(p.id);
+    if (f) f.el.src = url;
+  } else {
+    Store.addPanel({ url });
+  }
+});
+
 // ---- dialogs ---------------------------------------------------------------
 
 let editing = null;
@@ -518,6 +547,8 @@ function editDialog(p) {
   $("f-keep").checked = !!p?.keepAlive;
   $("f-notify").checked = !!p?.notify;
   $("f-folder").value = p?.folder ?? "";
+  $("f-dark").checked = !!p?.dark;
+  $("f-css").value = p?.css ?? "";
   $("folders").replaceChildren(
     ...[...new Set(S.panels.map(x => x.folder).filter(Boolean))].map(name => el("option", { value: name }))
   );
@@ -541,6 +572,8 @@ $("edit-form").onsubmit = async e => {
     keepAlive: $("f-keep").checked,
     notify: $("f-notify").checked,
     folder: $("f-folder").value.trim().slice(0, 40),
+    dark: $("f-dark").checked,
+    css: $("f-css").value.slice(0, 5000),
   };
   $("edit-dialog").close();
   if (editing) {
@@ -636,6 +669,7 @@ function syncFrames(oldPanels) {
       if (now && id === activeId) ensureFrame(now);
     } else {
       f.el.style.zoom = now.zoom || 1;
+      if (before && (!!before.dark !== !!now.dark || (before.css || "") !== (now.css || ""))) sendInit(id);
     }
   }
   if (activeId && !byId(activeId)) activeId = null;

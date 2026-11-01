@@ -296,6 +296,16 @@ dialog form { display: flex; flex-direction: column; gap: 10px; }
 dialog h3 { margin: 0; font-size: 15px; }
 dialog label { display: flex; flex-direction: column; gap: 4px; }
 dialog label.row { flex-direction: row; align-items: center; gap: 8px; }
+dialog { max-height: calc(100vh - 24px); overflow-y: auto; }
+dialog textarea {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  color: inherit;
+  font: 12px ui-monospace, monospace;
+  resize: vertical;
+}
 dialog input[type="text"], dialog input[type="number"], dialog select {
   padding: 6px 8px;
   border: 1px solid var(--line);
