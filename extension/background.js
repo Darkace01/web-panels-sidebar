@@ -120,17 +120,19 @@ browser.runtime.onMessage.addListener(msg => {
 // ---- Add pages from outside the sidebar -----------------------------------
 // sidebarAction.open() must run synchronously inside the user action.
 
-browser.contextMenus.create({
+// "tab" is the tab strip's right-click menu (needs the "menus" permission).
+browser.menus.create({
   id: "add-page",
-  title: "Add to Zen Sidebar",
-  contexts: ["page", "link"],
+  title: "Send to Zen Sidebar",
+  contexts: ["page", "link", "tab"],
 });
 
-browser.contextMenus.onClicked.addListener(async (info, tab) => {
+browser.menus.onClicked.addListener(async (info, tab) => {
   browser.sidebarAction.open();
   const fromLink = !!info.linkUrl;
   await Store.addPanel({
-    url: fromLink ? info.linkUrl : info.pageUrl,
+    // Tab menu clicks carry no pageUrl; the clicked tab has the address.
+    url: fromLink ? info.linkUrl : info.pageUrl || tab?.url,
     name: fromLink ? info.linkText : tab?.title,
     icon: fromLink ? "" : tab?.favIconUrl,
   });

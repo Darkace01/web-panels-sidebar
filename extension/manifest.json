@@ -14,7 +14,7 @@
   "permissions": [
     "storage",
     "tabs",
-    "contextMenus",
+    "menus",
     "search",
     "webRequest",
     "webRequestBlocking",
