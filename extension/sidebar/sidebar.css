@@ -13,7 +13,8 @@ html, body {
   margin: 0;
   height: 100%;
   font: 13px system-ui, sans-serif;
-  background: Canvas;
+  /* Transparent so Zen's own tab-area background shows through */
+  background: transparent;
   color: CanvasText;
   overflow: hidden;
 }
