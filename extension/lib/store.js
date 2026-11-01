@@ -98,7 +98,7 @@ const Store = {
       name: (name || "").trim() || new URL(u).hostname,
       url: u,
       icon: icon || "",
-      mobile: false,
+      mobile: true, // the sidebar is phone-sized, so ask for mobile sites by default
       keepAlive: false,
       zoom: 1,
     };

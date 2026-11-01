@@ -77,8 +77,8 @@ function renderRail() {
     img.onerror = () => btn.classList.remove("has-icon");
     btn.append(el("span", { className: "letter", textContent: [...(p.name || "?")][0] }), img);
 
-    // Clicking the open panel's icon closes the whole sidebar, like Vivaldi.
-    btn.onclick = () => (p.id === activeId ? browser.sidebarAction.close() : openPanel(p.id));
+    // Clicking the open panel's icon closes its view; the sidebar stays.
+    btn.onclick = () => (p.id === activeId ? closeView() : openPanel(p.id));
     btn.oncontextmenu = e => {
       e.preventDefault();
       showMenu(e.clientX, e.clientY, [
@@ -139,7 +139,10 @@ function renderRail() {
 }
 
 function renderStage() {
-  $("empty").hidden = S.panels.length > 0;
+  $("empty").hidden = !!byId(activeId);
+  $("empty").textContent = S.panels.length
+    ? "Pick a panel from the rail."
+    : "No panels yet. Use + on the rail to add one.";
   for (const [id, f] of frames) f.el.hidden = id !== activeId;
 }
 
@@ -173,6 +176,12 @@ function openPanel(id) {
   ensureFrame(p).last = Date.now();
   render();
   if (S.lastId !== id) Store.set({ lastId: id });
+}
+
+// Hide the open panel but keep it loaded (audio keeps playing) until idle.
+function closeView() {
+  activeId = null;
+  render();
 }
 
 function unloadPanel(id) {
@@ -245,7 +254,7 @@ function editDialog(p) {
   $("edit-heading").textContent = p ? "Edit panel" : "Add web panel";
   $("f-name").value = p?.name ?? "";
   $("f-url").value = p?.url ?? "";
-  $("f-mobile").checked = !!p?.mobile;
+  $("f-mobile").checked = p ? !!p.mobile : true;
   $("f-keep").checked = !!p?.keepAlive;
   $("edit-error").textContent = "";
   $("edit-dialog").showModal();
@@ -347,6 +356,9 @@ setInterval(() => {
 // ---- start -----------------------------------------------------------------
 
 (async () => {
+  // Tell the background the sidebar is open, so it doesn't auto-open it again
+  // (and doesn't fight a user who closes it).
+  browser.runtime.sendMessage({ type: "sidebar-open" }).catch(() => {});
   S = await Store.get();
   if (!S.seeded) {
     // Claim first so a second window doesn't seed again.

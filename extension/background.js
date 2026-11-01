@@ -92,8 +92,29 @@ browser.webRequest.onCompleted.addListener(
   { urls: ["<all_urls>"], types: ["sub_frame"] }
 );
 
+// ---- Open the sidebar on its own ------------------------------------------
+// sidebarAction.open() only works inside a user action, so the first click or
+// keypress in any web page after startup opens the sidebar (once per session;
+// never again after it has been shown, so closing it sticks).
+
+let autoOpenDone = false;
+
 browser.runtime.onMessage.addListener(msg => {
-  if (msg?.type === "lastUrl") return Promise.resolve(lastUrl.get(msg.id) ?? null);
+  switch (msg?.type) {
+    case "lastUrl":
+      return Promise.resolve(lastUrl.get(msg.id) ?? null);
+    case "sidebar-open":
+      autoOpenDone = true;
+      break;
+    case "page-interaction":
+      if (autoOpenDone) break;
+      autoOpenDone = true;
+      // Must be called synchronously, no await before it.
+      browser.sidebarAction.open().catch(() => {
+        autoOpenDone = false;
+      });
+      break;
+  }
 });
 
 // ---- Add pages from outside the sidebar -----------------------------------

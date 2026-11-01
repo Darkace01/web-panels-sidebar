@@ -21,6 +21,13 @@
     "<all_urls>"
   ],
   "background": { "scripts": ["lib/store.js", "background.js"] },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content/opener.js"],
+      "run_at": "document_start"
+    }
+  ],
   "sidebar_action": {
     "default_title": "Zen Sidebar",
     "default_panel": "sidebar/sidebar.html",

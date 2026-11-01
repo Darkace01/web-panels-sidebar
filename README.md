@@ -4,7 +4,7 @@ A Vivaldi / Brave / Edge-style web panel sidebar for Zen Browser, built as a Fir
 
 ## Features
 
-- Icon rail with site favicons; click an icon to open its panel, click the open one to close the sidebar
+- Icon rail with site favicons; click an icon to open its panel, click the open one to close just that view (the sidebar stays)
 - Add the current page, any website, or right-click a page/link and choose **Add to Zen Sidebar**
 - Search bar at the top: type a search or an address and the open panel navigates there (uses your default search engine; unrecognised engines fall back to DuckDuckGo)
 - Right-click a rail icon for reload, start page, zoom, open in a new tab, edit, remove
@@ -42,6 +42,11 @@ The extension can't move or resize Firefox's sidebar itself; those are browser s
 - The icon rail itself defaults to the right edge of the sidebar. Dragging the sidebar's edge overrides the default width.
 
 On first run the sidebar opens with one panel: the home page of your default search engine.
+
+## Opening and mobile view
+
+- Extensions can only open a sidebar during a user action, so the sidebar opens on your first click or keypress in a web page after Zen starts (not on Zen's own start page). It won't reopen on its own if you close it. Once opened, Zen normally restores it on restart.
+- New panels request the mobile version of sites by default; untick it in a panel's Edit dialog.
 
 ## Limitations
 
