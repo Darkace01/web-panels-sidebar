@@ -1,11 +1,19 @@
-# Store listing (addons.mozilla.org)
+# Store listing
 
-Copy each block into the matching field when you submit.
+Copy each block into the matching field when you submit. Firefox (addons.mozilla.org) and the Chrome Web Store use the same text unless a section says otherwise.
 
 ## Name (max 50 characters)
 
+Firefox / Zen:
+
 ```
 Web Panels Sidebar for Zen
+```
+
+Chrome (the manifest uses this name):
+
+```
+Web Panels Sidebar
 ```
 
 ## Summary (max 250 characters)
@@ -36,13 +44,13 @@ STAY ON TOP OF THINGS
 
 SPEED AND CONTROL
 • Panels load only when first used; idle ones unload automatically
-• Alt+Shift+S toggles the sidebar, Alt+Shift+A adds the current page, Alt+Shift+1 to 9 open panels 1 to 9
+• Alt+Shift+S opens the sidebar, Alt+Shift+A adds the current page, Alt+Shift+1 to 9 open panels 1 to 9 (Chrome: 1 and 2 are preset, assign the rest in the shortcuts page)
 • Export and import your panels
 
 PRIVACY
 Everything stays on your device. No accounts, no analytics, no tracking.
 
-OPTIONAL: a few small CSS tweaks for Zen (sidebar width, hide the title bar, tuck away in compact mode) are provided in the project's repository.
+OPTIONAL (Zen): a few small CSS tweaks for Zen (sidebar width, hide the title bar, tuck away in compact mode) are provided in the project's repository.
 
 Note: sites load in frames. The extension removes the headers that block framing, so most sites work, but a few (for example some banking and login pages) may still refuse to load. Panel logins are separate from your normal tabs: sign in once inside each panel.
 ```
@@ -82,6 +90,27 @@ Why the broad permissions:
 
 No data leaves the device. No remote code is loaded. The source is not minified or bundled: the uploaded files are the source files.
 ```
+
+## Chrome Web Store extras
+
+Single purpose:
+
+```
+Show websites the user chooses as web panels in the browser's side panel, next to the current page.
+```
+
+Permission justifications (one per field the dashboard asks for):
+
+- **sidePanel**: displays the web panels in Chrome's side panel.
+- **declarativeNetRequest + host permission (all sites)**: the panels are websites chosen by the user, shown in frames inside the side panel. Rules remove the X-Frame-Options and Content-Security-Policy response headers of pages framed by the extension's own side panel (rule condition: sub_frame requests initiated by the extension), and set a mobile User-Agent for panels where the user turned on mobile view. Normal tabs are not touched.
+- **Host permission / content script**: a small script runs in frames and stays silent until the extension's own side panel page sends it a message; it then reports the frame's address, title and unread count back to the side panel and applies the user's dark-mode / CSS choices.
+- **tabs**: add the current tab as a panel and open a panel's page in a new tab.
+- **contextMenus**: "Send to Web Panels" in the page and link menus.
+- **bookmarks, history**: read-only suggestions in the side panel's search bar.
+- **notifications**: optional alerts when a panel's unread count rises.
+- **storage**: saves the user's panels and settings locally.
+
+Remote code: none. Data use: nothing is collected or transmitted; tick the "does not collect user data" certifications and link the privacy policy (`PRIVACY.md`).
 
 ## Screenshots to capture (1280x800 or similar, PNG)
 
