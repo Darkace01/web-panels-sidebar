@@ -1,0 +1,29 @@
+[
+  {
+    "property": "mod.zen-sidebar.rail-position",
+    "label": "Rail position",
+    "type": "dropdown",
+    "defaultValue": "right",
+    "options": [
+      { "label": "Right (Vivaldi/Edge)", "value": "right" },
+      { "label": "Left", "value": "left" }
+    ]
+  },
+  {
+    "property": "mod.zen-sidebar.compact-rail",
+    "label": "Compact icon rail (hide labels, tighter spacing)",
+    "type": "checkbox",
+    "defaultValue": true
+  },
+  {
+    "property": "mod.zen-sidebar.panel-width",
+    "label": "Web panel width",
+    "type": "dropdown",
+    "defaultValue": "380px",
+    "options": [
+      { "label": "Narrow (320px)", "value": "320px" },
+      { "label": "Default (380px)", "value": "380px" },
+      { "label": "Wide (480px)", "value": "480px" }
+    ]
+  }
+]

@@ -1,0 +1,93 @@
+/*
+ * Zen Sidebar - Vivaldi/Edge-style icon rail + web panel for Zen.
+ *
+ * NOTE: Selectors target Zen's built-in web panels. Zen's DOM changes between
+ * releases; verify IDs with the Browser Toolbox (see CLAUDE.md) when a
+ * Zen update breaks this mod.
+ */
+
+:root {
+  --zs-rail-width: 44px;
+  --zs-rail-icon: 22px;
+  --zs-panel-width: 380px;
+  --zs-radius: 10px;
+  --zs-gap: 6px;
+}
+
+/* ---- Preferences -------------------------------------------------------- */
+
+@media -moz-pref("mod.zen-sidebar.panel-width", "320px") {
+  :root { --zs-panel-width: 320px; }
+}
+@media -moz-pref("mod.zen-sidebar.panel-width", "480px") {
+  :root { --zs-panel-width: 480px; }
+}
+
+/* ---- Icon rail ---------------------------------------------------------- */
+
+#zen-sidebar-web-panel-sites,
+#zen-sidebar-panels-sidebar {
+  width: var(--zs-rail-width) !important;
+  min-width: var(--zs-rail-width) !important;
+  padding: var(--zs-gap) 0 !important;
+  gap: var(--zs-gap) !important;
+  align-items: center !important;
+  background: transparent !important;
+}
+
+.zen-sidebar-panel-button,
+#zen-sidebar-web-panel-sites .zen-sidebar-panel-button {
+  width: calc(var(--zs-rail-width) - 12px) !important;
+  height: calc(var(--zs-rail-width) - 12px) !important;
+  border-radius: var(--zs-radius) !important;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.zen-sidebar-panel-button:hover {
+  background-color: color-mix(in srgb, currentColor 12%, transparent) !important;
+}
+
+.zen-sidebar-panel-button[selected],
+.zen-sidebar-panel-button[active] {
+  background-color: color-mix(in srgb, currentColor 18%, transparent) !important;
+}
+
+.zen-sidebar-panel-button .zen-sidebar-panel-icon,
+.zen-sidebar-panel-button image {
+  width: var(--zs-rail-icon) !important;
+  height: var(--zs-rail-icon) !important;
+}
+
+/* ---- Web panel ---------------------------------------------------------- */
+
+#zen-sidebar-web-panel {
+  width: var(--zs-panel-width) !important;
+  min-width: 280px !important;
+  max-width: 70vw !important;
+  border-radius: var(--zs-radius) !important;
+  overflow: hidden;
+}
+
+/* ---- Rail position ------------------------------------------------------ */
+
+@media -moz-pref("mod.zen-sidebar.rail-position", "right") {
+  #zen-sidebar-web-panel-wrapper,
+  #zen-sidebar-panels-wrapper {
+    order: 99;
+  }
+}
+@media -moz-pref("mod.zen-sidebar.rail-position", "left") {
+  #zen-sidebar-web-panel-wrapper,
+  #zen-sidebar-panels-wrapper {
+    order: -1;
+  }
+}
+
+/* ---- Compact rail ------------------------------------------------------- */
+
+@media -moz-pref("mod.zen-sidebar.compact-rail", true) {
+  .zen-sidebar-panel-button label,
+  .zen-sidebar-panel-button .zen-sidebar-panel-label {
+    display: none !important;
+  }
+}
