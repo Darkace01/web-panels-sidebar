@@ -128,11 +128,12 @@ body.collapsed #stage {
   border-radius: 12px;
   background: transparent;
   color: inherit;
-  font-size: 22px;
-  line-height: 1;
+  display: grid;
+  place-items: center;
   cursor: pointer;
   transition: background-color .18s ease, opacity .18s ease, transform .12s ease;
 }
+.tool svg { width: 22px; height: 22px; display: block; }
 .tool:hover:not(:disabled) { background: var(--hover); }
 .tool:active:not(:disabled) { transform: scale(.9); }
 .tool:disabled { opacity: .35; cursor: default; }
@@ -141,7 +142,8 @@ body.collapsed #stage {
 #q {
   flex: 1;
   min-width: 0;
-  padding: 7px 12px;
+  height: 38px;
+  padding: 0 14px;
   border: 1px solid transparent;
   border-radius: 999px;
   background: var(--hover);
