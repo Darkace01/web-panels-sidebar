@@ -27,7 +27,7 @@ Open an issue and include:
 
 ## Setting up
 
-You need [Node.js](https://nodejs.org) 18+ (the build uses only Node itself) and, to redraw icons, Python with Pillow.
+You need [Node.js](https://nodejs.org) 20+ (the build uses only Node itself) and, to redraw icons, Python with Pillow.
 
 ```bash
 git clone <your fork>

@@ -29,7 +29,7 @@ Built for **Zen Browser** and **Firefox**, with a separate build for **Chrome** 
 
 ## Install
 
-There is no store release yet. Until there is, build it from source (about two minutes). You need [Node.js](https://nodejs.org) 18 or newer.
+There is no store release yet. Until there is, build it from source (about two minutes). You need [Node.js](https://nodejs.org) 20 or newer.
 
 ```bash
 git clone https://github.com/Darkace01/web-panels-sidebar.git
