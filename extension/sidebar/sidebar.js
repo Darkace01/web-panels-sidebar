@@ -74,7 +74,16 @@ function renderRail() {
   const rail = $("rail");
   rail.replaceChildren();
 
+  const doneFolders = new Set();
   for (const p of S.panels) {
+    // Panels in a folder share one rail button, placed where the first one is.
+    if (p.folder) {
+      if (!doneFolders.has(p.folder)) {
+        doneFolders.add(p.folder);
+        rail.append(folderButton(p.folder));
+      }
+      continue;
+    }
     const btn = el("button", {
       className: "btn" + (p.id === activeId ? " active" : "") + (frames.has(p.id) ? " loaded" : ""),
       title: p.name,
@@ -151,6 +160,33 @@ function renderRail() {
   );
 }
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+const FOLDER_PATH =
+  "M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z";
+
+function folderButton(name) {
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  for (const [k, v] of Object.entries({ fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linejoin": "round" })) {
+    svg.setAttribute(k, v);
+  }
+  const path = document.createElementNS(SVG_NS, "path");
+  path.setAttribute("d", FOLDER_PATH);
+  svg.append(path);
+  const btn = el("button", { className: "btn folder", title: name }, svg, el("span", { className: "badge" }));
+  btn.dataset.folder = name;
+  btn.onclick = e => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const members = S.panels.filter(p => p.folder === name);
+    showMenu(
+      S.railPosition === "left" ? r.right + 4 : r.left - 184,
+      r.top,
+      members.map(p => ({ label: (p.id === activeId ? "● " : "") + p.name, run: () => openPanel(p.id) }))
+    );
+  };
+  return btn;
+}
+
 function renderStage() {
   // The hint only appears when there are no panels at all.
   $("empty").classList.toggle("show", S.panels.length === 0);
@@ -168,6 +204,14 @@ function refreshRail() {
     const n = frames.get(btn.dataset.id)?.badge ?? 0;
     const badge = btn.querySelector(".badge");
     badge.textContent = n > 99 ? "99+" : String(n);
+    btn.classList.toggle("has-badge", n > 0);
+  }
+  for (const btn of $("rail").querySelectorAll(".btn[data-folder]")) {
+    const members = S.panels.filter(p => p.folder === btn.dataset.folder);
+    btn.classList.toggle("active", members.some(p => p.id === activeId));
+    btn.classList.toggle("loaded", members.some(p => frames.has(p.id)));
+    const n = members.reduce((sum, p) => sum + (frames.get(p.id)?.badge ?? 0), 0);
+    btn.querySelector(".badge").textContent = n > 99 ? "99+" : String(n);
     btn.classList.toggle("has-badge", n > 0);
   }
 }
@@ -193,7 +237,7 @@ function render() {
   // Rail-only mode: nothing but the icons (search stays when there are no panels yet).
   document.body.classList.toggle("collapsed", S.panels.length > 0 && !byId(activeId));
   // Only rebuild the rail when its contents change; otherwise just update it.
-  const key = JSON.stringify([S.railPosition, S.panels.map(p => [p.id, p.name, p.url, p.icon])]);
+  const key = JSON.stringify([S.railPosition, S.panels.map(p => [p.id, p.name, p.url, p.icon, p.folder])]);
   if (key !== railKey) {
     railKey = key;
     renderRail();
@@ -473,6 +517,10 @@ function editDialog(p) {
   $("f-mobile").checked = p ? !!p.mobile : true;
   $("f-keep").checked = !!p?.keepAlive;
   $("f-notify").checked = !!p?.notify;
+  $("f-folder").value = p?.folder ?? "";
+  $("folders").replaceChildren(
+    ...[...new Set(S.panels.map(x => x.folder).filter(Boolean))].map(name => el("option", { value: name }))
+  );
   $("edit-error").textContent = "";
   $("edit-dialog").showModal();
   (p ? $("f-name") : $("f-url")).focus();
@@ -492,6 +540,7 @@ $("edit-form").onsubmit = async e => {
     mobile: $("f-mobile").checked,
     keepAlive: $("f-keep").checked,
     notify: $("f-notify").checked,
+    folder: $("f-folder").value.trim().slice(0, 40),
   };
   $("edit-dialog").close();
   if (editing) {

@@ -98,6 +98,8 @@ body[data-rail="left"] .btn::before { right: -5px; }
 .btn.has-icon .letter { visibility: hidden; }
 .btn.add { font-size: 22px; font-weight: 300; opacity: .7; }
 
+.btn.folder svg { grid-area: 1 / 1; width: 22px; height: 22px; opacity: .85; }
+
 .badge {
   position: absolute;
   top: -2px;
