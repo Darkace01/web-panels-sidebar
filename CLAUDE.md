@@ -2,34 +2,39 @@
 
 ## Project
 
-Zen Sidebar: a Zen Browser mod (CSS-only, Firefox-based) that styles Zen's web panels into a Vivaldi/Brave/Edge-style icon rail + side panel.
+Zen Sidebar: a userChrome script (`.uc.mjs`, loaded by fx-autoconfig) that adds a Vivaldi/Edge-style web panel sidebar to Zen Browser. Zen 1.24b (Firefox-based) has no built-in web panels, so this builds the UI and panel browsers itself.
+
+History: this started as a CSS-only Zen mod restyling web panels; that was dropped because the panels don't exist in current Zen.
 
 ## Layout
 
-- `chrome.css` - the mod's styles (loaded as userChrome by Zen's mod system)
-- `preferences.json` - user-facing settings shown in Zen's Mods settings
-- `theme.json` - mod metadata for the Zen theme store (replace `OWNER` in URLs once the GitHub repo exists)
-- `scripts/install.ps1` - copies the mod into a local Zen profile for testing
-- `README.md` - required by the store; keep valid and user-facing
-- `screenshot.png` - store image, must be PNG, 600x400 (not yet created)
+- `src/zen_sidebar.uc.mjs` - the whole mod: UI, panel logic, styles (inline string), config persistence. Single file on purpose (no import-path risk under the loader).
+- `scripts/install.ps1` - installs fx-autoconfig into Zen's install dir (needs admin) and copies the script into the profile's `chrome/JS/`.
+- `README.md` - user-facing docs.
+
+## How it works
+
+- Root `#zs-root` (XUL hbox) is inserted into Zen's `#browser`: appended for right, before `#zen-tabbox-wrapper` for left.
+- Each panel is a `<browser type="content" remote="true">` created lazily; `usercontextid` gives container support; mobile mode sets `browsingContext.customUserAgent`.
+- Config is JSON at `<profile>/zen_sidebar.json` (`IOUtils`), saved debounced.
+- Panels are plain DOM built with the `h()` helper; no framework, no build step.
 
 ## Conventions
 
-- Pure CSS only; no JS. Zen mods can't ship scripts.
-- Prefix all custom properties with `--zs-`; prefix pref names `mod.zen-sidebar.`.
-- Read prefs in CSS with `@media -moz-pref("pref.name", "value")`.
-- Mod name < 25 chars, description < 100 chars (store limits).
-- Store URLs in `theme.json` must be raw GitHub URLs, not relative paths; README filename uppercase issues have broken store tooling, so keep `README.md` as is and linked via raw URL.
+- Plain JS, no dependencies, no build. Keep it in one file unless it gets unwieldy.
+- Only http(s) URLs are accepted for panels (`normalizeUrl`).
+- CSS ids/classes prefixed `zs-`.
+- Syntax check: `node --check src/zen_sidebar.uc.mjs` (this only catches syntax; the browser APIs can't be run outside Zen).
 
-## Testing locally
+## Testing
 
-1. `.\scripts\install.ps1` (optionally `-ProfilePath`), then fully quit and reopen Zen.
-2. Enable `toolkit.legacyUserProfileCustomizations.stylesheets` in `about:config` if styles don't apply.
-3. Inspect Zen's UI with the Browser Toolbox (`Ctrl+Shift+Alt+I`, enable chrome debugging in devtools settings) to find current element IDs.
+1. Close Zen, run `.\scripts\install.ps1` as admin, start Zen with `-purgecaches`.
+2. Debug via the Browser Console (`Ctrl+Shift+J`); script errors appear there. `window.ZenSidebar` exposes `cfg`, `open`, `close`, `toggle` in the browser window.
+3. Changing the script: copy it to `<profile>\chrome\JS\` again and restart Zen (or purge caches).
 
-## Known risks / TODO
+## Status / TODO
 
-- The selectors in `chrome.css` (`#zen-sidebar-web-panel`, `#zen-sidebar-web-panel-sites`, `.zen-sidebar-panel-button`, ...) are best-guess from Zen's built-in web panels and are UNVERIFIED against the installed Zen version. Verify with the Browser Toolbox first.
-- The local registry format written by `install.ps1` (`zen-themes.json`) follows community notes; confirm against a mod installed through the UI.
-- Zen already ships web panels; this mod restyles them rather than adding new functionality. Behavior changes (e.g. auto-hide rail) would need Zen-side support.
-- Submission: open an issue in zen-browser/theme-store using the "create-theme" template.
+- UNTESTED in a real Zen: written from knowledge of Firefox chrome APIs, only syntax-checked. First real run will likely need fixes (suspects: `browser.browsingContext` availability right after append, `fixupAndLoadURIString`, `page-icon:` favicons, Zen layout/theme variables, insertion point in `#browser`).
+- fx-autoconfig repo layout (`program/`, `profile/chrome/`) assumed in install.ps1; verify.
+- Multiple windows each keep their own state and the last write wins.
+- Ideas: overlay (float over page) mode, auto-hide rail, per-panel width, import/export, notification badges, settings UI.
