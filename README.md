@@ -62,6 +62,7 @@ The extension can't move or resize Firefox's sidebar itself; those are browser s
 
 - **The "Web Panels" title bar, the side, the width and the background** are set with profile files in `dev-profile/`: a hidden `#sidebar-header`, a default width of about 25% of the window, `sidebar.position_start=false`, and a transparent sidebar so Zen's tab-area background shows through. `npm run start` uses them automatically. For your normal profile, close Zen and run `.\scripts\apply-ui-tweaks.ps1`, then restart Zen. Re-run it after pulling updates; it replaces its own block.
 - With those tweaks, closing a panel's view shrinks the sidebar to just the icon rail, and opening a panel expands it again. Without them, the sidebar keeps its width.
+- **Zen's compact mode:** when it is on, the sidebar tucks away to a thin strip at the window edge and slides out when you move the pointer to it, matching Zen's own tab sidebar. Turn compact mode off and it stays put again.
 - The tweaks fix the width at about 25% of the window (320 to 480px), so dragging the edge won't resize it.
 
 ## Opening and mobile view

@@ -27,4 +27,20 @@
   min-width: 47px !important;
   max-width: 47px !important;
 }
+
+/* Zen's compact mode: tuck the sidebar away to a thin edge strip, and slide it
+   back out when the pointer reaches it (like Zen's own tab sidebar). The extra
+   #sidebar-box id keeps this stronger than the rules above. */
+#sidebar-box > * {
+  transition: opacity .2s ease;
+}
+:root[zen-compact-mode="true"] #sidebar-box#sidebar-box:not(:hover) {
+  width: 6px !important;
+  min-width: 6px !important;
+  max-width: 6px !important;
+  overflow: hidden;
+}
+:root[zen-compact-mode="true"] #sidebar-box#sidebar-box:not(:hover) > * {
+  opacity: 0;
+}
 /* zen-sidebar:end */
