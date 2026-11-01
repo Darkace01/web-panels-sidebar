@@ -67,7 +67,8 @@ Note: sites load in frames. The extension removes the headers that block framing
 ## Support, links and licence
 
 - Support email / site: your own (also used in `PRIVACY.md`)
-- Homepage / source: the project's repository URL
+- Homepage / source: https://github.com/Darkace01/web-panels-sidebar
+- Support / issues: https://github.com/Darkace01/web-panels-sidebar/issues
 - Licence: MIT (see `LICENSE`)
 - Privacy policy: paste the contents of `PRIVACY.md`
 

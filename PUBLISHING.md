@@ -19,7 +19,7 @@ Everything the stores ask for is in this repo:
 
 ## Before you submit (both stores)
 
-1. Replace `SUPPORT_CONTACT` in `PRIVACY.md` with your support email or issue-tracker URL.
+1. Check the support link in `PRIVACY.md` (it points to the repository's issues page; swap in a support email if you prefer).
 2. Check the copyright holder in `LICENSE` and the `author` in both manifests ("Beere Softwares" was assumed).
 3. Take the screenshots listed in `store/listing.md` in a real browser (1280x800 PNG).
 4. Test both builds in a real browser (see `CONTRIBUTING.md`). This project has not been tested in a running browser yet, so do not skip this.

@@ -5,6 +5,7 @@
   "description": "Pin sites to an icon rail and open them in the side panel, like Vivaldi and Edge web panels. Mobile view, unread badges, folders.",
   "minimum_chrome_version": "116",
   "author": "Beere Softwares",
+  "homepage_url": "https://github.com/Darkace01/web-panels-sidebar",
   "icons": {
     "48": "icons/icon-48.png",
     "96": "icons/icon-96.png",
@@ -20,17 +21,28 @@
     "sidePanel",
     "declarativeNetRequest"
   ],
-  "host_permissions": ["<all_urls>"],
-  "background": { "service_worker": "background.js" },
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["content/panel-agent.js"],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/panel-agent.js"
+      ],
       "all_frames": true,
       "run_at": "document_start"
     }
   ],
-  "side_panel": { "default_path": "sidebar/sidebar.html" },
+  "side_panel": {
+    "default_path": "sidebar/sidebar.html"
+  },
   "action": {
     "default_title": "Web Panels",
     "default_icon": {
@@ -40,27 +52,49 @@
   },
   "commands": {
     "toggle-sidebar": {
-      "suggested_key": { "default": "Alt+Shift+S" },
+      "suggested_key": {
+        "default": "Alt+Shift+S"
+      },
       "description": "Open the Web Panels side panel"
     },
     "add-current-page": {
-      "suggested_key": { "default": "Alt+Shift+A" },
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      },
       "description": "Add the current page as a panel"
     },
     "open-panel-1": {
-      "suggested_key": { "default": "Alt+Shift+1" },
+      "suggested_key": {
+        "default": "Alt+Shift+1"
+      },
       "description": "Open panel 1"
     },
     "open-panel-2": {
-      "suggested_key": { "default": "Alt+Shift+2" },
+      "suggested_key": {
+        "default": "Alt+Shift+2"
+      },
       "description": "Open panel 2"
     },
-    "open-panel-3": { "description": "Open panel 3" },
-    "open-panel-4": { "description": "Open panel 4" },
-    "open-panel-5": { "description": "Open panel 5" },
-    "open-panel-6": { "description": "Open panel 6" },
-    "open-panel-7": { "description": "Open panel 7" },
-    "open-panel-8": { "description": "Open panel 8" },
-    "open-panel-9": { "description": "Open panel 9" }
+    "open-panel-3": {
+      "description": "Open panel 3"
+    },
+    "open-panel-4": {
+      "description": "Open panel 4"
+    },
+    "open-panel-5": {
+      "description": "Open panel 5"
+    },
+    "open-panel-6": {
+      "description": "Open panel 6"
+    },
+    "open-panel-7": {
+      "description": "Open panel 7"
+    },
+    "open-panel-8": {
+      "description": "Open panel 8"
+    },
+    "open-panel-9": {
+      "description": "Open panel 9"
+    }
   }
 }

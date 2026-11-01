@@ -38,4 +38,4 @@ The extension itself makes no network requests to the developer or any third par
 
 The extension is not directed at children. If this policy changes, the date above will change and the new version will ship with the extension.
 
-Questions: contact Beere Softwares at SUPPORT_CONTACT (replace with your support email or issue-tracker URL before publishing).
+Questions: contact Beere Softwares at https://github.com/Darkace01/web-panels-sidebar/issues.

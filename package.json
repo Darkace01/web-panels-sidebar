@@ -14,5 +14,14 @@
   },
   "devDependencies": {
     "web-ext": "^8.0.0"
-  }
+  },
+  "homepage": "https://github.com/Darkace01/web-panels-sidebar",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Darkace01/web-panels-sidebar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Darkace01/web-panels-sidebar/issues"
+  },
+  "license": "MIT"
 }

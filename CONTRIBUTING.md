@@ -31,7 +31,7 @@ You need [Node.js](https://nodejs.org) 18+ (the build uses only Node itself) and
 
 ```bash
 git clone <your fork>
-cd zen-sidebar
+cd web-panels-sidebar
 npm install
 npm run build        # builds dist/firefox and dist/chrome
 npm run lint         # builds the Firefox version and lints it

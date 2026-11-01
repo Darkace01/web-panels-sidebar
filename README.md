@@ -32,8 +32,8 @@ Built for **Zen Browser** and **Firefox**, with a separate build for **Chrome** 
 There is no store release yet. Until there is, build it from source (about two minutes). You need [Node.js](https://nodejs.org) 18 or newer.
 
 ```bash
-git clone <this repository>
-cd zen-sidebar
+git clone https://github.com/Darkace01/web-panels-sidebar.git
+cd web-panels-sidebar
 npm install
 npm run build
 ```
@@ -132,7 +132,7 @@ dist/      build output (git-ignored)
 
 ## Contributing
 
-Bug reports, ideas and pull requests are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md).
+Bug reports, ideas and pull requests are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), and open issues at https://github.com/Darkace01/web-panels-sidebar/issues.
 
 ## Privacy
 
