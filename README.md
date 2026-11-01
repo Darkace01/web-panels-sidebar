@@ -44,6 +44,10 @@ npm run start
 
 This opens Zen with the extension loaded in a temporary profile, using the UI tweaks in `dev-profile/`. To load it in your normal profile for a session: `about:debugging#/runtime/this-firefox` > Load Temporary Add-on > pick `extension/manifest.json` (removed when Zen restarts).
 
+## Publish
+
+See [PUBLISHING.md](PUBLISHING.md) for the store steps. The listing text is in [store/listing.md](store/listing.md), the privacy policy in [PRIVACY.md](PRIVACY.md), the licence in [LICENSE](LICENSE).
+
 ## Install permanently
 
 Release builds of Zen only keep signed extensions. Sign it for yourself (free, not listed publicly) with an addons.mozilla.org API key:

@@ -14,6 +14,7 @@ Web Panels Sidebar for Zen (repo `zen-sidebar`): a Firefox/Zen WebExtension (Man
   - `lib/store.js` - `Store`: storage.local access + `addPanel`/`normalizeUrl`, loaded by both background and sidebar
   - `sidebar/` - the sidebar page: `sidebar.html`, `sidebar.css`, `sidebar.js` (rail, iframes, dialogs)
 - `scripts/uninstall.ps1` - one-off cleanup of the earlier fx-autoconfig install; delete once it has been run
+- `store/listing.md`, `PRIVACY.md`, `LICENSE`, `PUBLISHING.md` - everything the add-ons store needs; `scripts/make-icons.py` redraws `extension/icons/*.png`
 - `package.json` - web-ext scripts only (`lint`, `build`, `start`, `sign`)
 
 ## How it works
