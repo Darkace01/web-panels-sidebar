@@ -1,0 +1,168 @@
+:root {
+  color-scheme: light dark;
+  --rail: 46px;
+  --hover: color-mix(in srgb, currentColor 12%, transparent);
+  --active: color-mix(in srgb, currentColor 20%, transparent);
+  --line: color-mix(in srgb, currentColor 18%, transparent);
+  --accent: #3b82f6;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  font: 13px system-ui, sans-serif;
+  background: Canvas;
+  color: CanvasText;
+  overflow: hidden;
+}
+
+#app { display: flex; height: 100%; }
+body[data-rail="right"] #app { flex-direction: row-reverse; }
+
+/* ---- rail ---- */
+#rail {
+  flex: none;
+  width: var(--rail);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  border-inline-end: 1px solid var(--line);
+}
+body[data-rail="right"] #rail { border-inline-end: none; border-inline-start: 1px solid var(--line); }
+
+.spacer { flex: 1; }
+
+.btn {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.btn:hover { background: var(--hover); }
+.btn.active { background: var(--active); }
+.btn.dragover { outline: 2px dashed var(--line); }
+.btn.loaded::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .55;
+}
+.btn .letter {
+  grid-area: 1 / 1;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--active);
+}
+.btn img { grid-area: 1 / 1; width: 20px; height: 20px; border-radius: 4px; display: none; }
+.btn.has-icon img { display: block; }
+.btn.has-icon .letter { visibility: hidden; }
+.btn.add { font-size: 22px; font-weight: 300; opacity: .7; }
+
+/* ---- stage ---- */
+#stage { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+#bar { flex: none; display: flex; align-items: center; gap: 2px; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+#title { flex: 1; min-width: 0; padding: 0 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.tool {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 15px;
+}
+.tool:hover { background: var(--hover); }
+
+#frames { flex: 1; position: relative; min-height: 0; }
+#frames iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: Canvas; }
+#frames iframe[hidden] { display: none; }
+
+#empty { margin: auto; text-align: center; opacity: .6; line-height: 1.6; }
+#empty[hidden], #bar[hidden] { display: none; }
+
+/* ---- context menu ---- */
+.menu {
+  position: fixed;
+  z-index: 10;
+  min-width: 180px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: Canvas;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .3);
+}
+.menu button {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+  font: inherit;
+  cursor: pointer;
+}
+.menu button:hover { background: var(--hover); }
+.menu hr { border: none; border-top: 1px solid var(--line); margin: 4px 2px; }
+
+/* ---- dialogs ---- */
+dialog {
+  width: min(340px, calc(100vw - 24px));
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: Canvas;
+  color: CanvasText;
+}
+dialog::backdrop { background: rgba(0, 0, 0, .35); }
+dialog form { display: flex; flex-direction: column; gap: 10px; }
+dialog h3 { margin: 0; font-size: 15px; }
+dialog label { display: flex; flex-direction: column; gap: 4px; }
+dialog label.row { flex-direction: row; align-items: center; gap: 8px; }
+dialog input[type="text"], dialog input[type="number"], dialog select {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  color: inherit;
+  font: inherit;
+}
+.error { margin: 0; min-height: 1em; color: #e5484d; }
+.actions { display: flex; justify-content: flex-end; gap: 8px; }
+.actions button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  background: var(--hover);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.actions button.primary { background: var(--accent); color: #fff; }

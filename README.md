@@ -1,29 +1,41 @@
 # Zen Sidebar
 
-A Vivaldi / Brave / Edge-style sidebar for Zen Browser: a slim icon rail of web panels that open beside the page.
-
-Zen no longer ships web panels (none in 1.24b), and CSS-only mods can't add one, so this is a userChrome script loaded with [fx-autoconfig](https://github.com/MrOtherGuy/fx-autoconfig).
+A Vivaldi / Brave / Edge-style web panel sidebar for Zen Browser, built as a Firefox extension (`sidebar_action`). Zen no longer ships web panels, so this adds them back without any userChrome loader.
 
 ## Features
 
-- Icon rail with site favicons; click to open a panel, click again to close
-- Add the current page or any website; right-click a rail icon to edit, reload, unload, remove
-- Per-panel Firefox container, with a colored underline on the icon
-- Mobile-site mode per panel
-- Per-panel zoom, back/forward/reload/home, open in a new tab
-- Drag icons to reorder; drag the panel edge to resize
-- Rail on the left or right
-- Panels load lazily and idle ones unload after 15 minutes (never while playing media)
-- Shortcuts: `Ctrl+Alt+1..9` toggle a panel, `Ctrl+Alt+0` close, `Ctrl+Alt+B` toggle last panel
+- Icon rail with site favicons; click an icon to open its panel, click the open one to close the sidebar
+- Add the current page, any website, or right-click a page/link and choose **Add to Zen Sidebar**
+- Mobile-site mode per panel, per-panel zoom, reload, home, open in a new tab
+- Drag icons to reorder; rail on the left or right
+- Panels load on first use; idle ones unload after 30 minutes unless marked "Keep loaded"
+- Shortcuts: `Alt+Shift+S` toggle the sidebar, `Alt+Shift+A` add the current page (rebindable in `about:addons` > gear > Manage Extension Shortcuts)
 
-## Install (Windows)
+## Try it
 
-Close Zen, then in an **administrator** PowerShell:
-
-```powershell
-.\scripts\install.ps1
+```bash
+npm install
+npm run start
 ```
 
-Start Zen once with `-purgecaches` (the script prints the exact command). Re-run the script after Zen updates.
+This opens Zen with the extension loaded in a temporary profile. To load it in your normal profile for a session: `about:debugging#/runtime/this-firefox` > Load Temporary Add-on > pick `extension/manifest.json` (removed when Zen restarts).
 
-Settings live in `zen_sidebar.json` in your profile folder.
+## Install permanently
+
+Release builds of Zen only keep signed extensions. Sign it for yourself (free, not listed publicly) with an addons.mozilla.org API key:
+
+```bash
+set WEB_EXT_API_KEY=...
+set WEB_EXT_API_SECRET=...
+npm run sign
+```
+
+Then open the `.xpi` from `web-ext-artifacts/` in Zen.
+
+## Limitations
+
+- Sites load in iframes. The extension strips `X-Frame-Options` / CSP `frame-ancestors` and rewrites cookies to `SameSite=None; Secure` so most sites work, but some will still refuse or break.
+- Panel cookies are separate from your normal tabs: log in once inside each panel.
+- Mobile mode changes the `User-Agent` header only, not `navigator.userAgent`.
+- No back/forward buttons (cross-origin frames can't be driven); use the site's own navigation or `Alt+Left`.
+- No Firefox container support for panels.

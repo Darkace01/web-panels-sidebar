@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Zen Sidebar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="sidebar.css">
+</head>
+<body data-rail="left">
+  <div id="app">
+    <nav id="rail" aria-label="Panels"></nav>
+    <main id="stage">
+      <header id="bar">
+        <span id="title"></span>
+        <button id="reload" class="tool" title="Reload">⟳</button>
+        <button id="home" class="tool" title="Back to the panel's start page">⌂</button>
+        <button id="zoom-out" class="tool" title="Zoom out">−</button>
+        <button id="zoom-in" class="tool" title="Zoom in">+</button>
+        <button id="open-tab" class="tool" title="Open in a new tab">↗</button>
+      </header>
+      <div id="frames"></div>
+      <p id="empty">No panels yet.<br>Use <b>+</b> on the rail to add one.</p>
+    </main>
+  </div>
+
+  <dialog id="edit-dialog">
+    <form method="dialog" id="edit-form">
+      <h3 id="edit-heading">Add web panel</h3>
+      <label>Name <input id="f-name" type="text" autocomplete="off"></label>
+      <label>Address <input id="f-url" type="text" placeholder="https://example.com" autocomplete="off"></label>
+      <label class="row"><input id="f-mobile" type="checkbox"> Request the mobile version of sites</label>
+      <label class="row"><input id="f-keep" type="checkbox"> Keep loaded (never unload when idle)</label>
+      <p id="edit-error" class="error" role="alert"></p>
+      <div class="actions">
+        <button type="button" id="edit-cancel">Cancel</button>
+        <button type="submit" id="edit-save" class="primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="settings-dialog">
+    <form method="dialog" id="settings-form">
+      <h3>Sidebar settings</h3>
+      <label>Rail position
+        <select id="s-rail">
+          <option value="left">Left</option>
+          <option value="right">Right</option>
+        </select>
+      </label>
+      <label>Unload idle panels after (minutes, 0 = never)
+        <input id="s-unload" type="number" min="0" step="1">
+      </label>
+      <div class="actions">
+        <button type="button" id="settings-cancel">Cancel</button>
+        <button type="submit" class="primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="../lib/store.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>
