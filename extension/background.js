@@ -5,7 +5,6 @@ const RV = /rv:([\d.]+)/.exec(navigator.userAgent)?.[1] ?? "140.0";
 const MOBILE_UA = `Mozilla/5.0 (Android 14; Mobile; rv:${RV}) Gecko/${RV} Firefox/${RV}`;
 
 let panels = [];
-const lastUrl = new Map(); // panel id -> last top-level URL loaded in its frame
 
 Store.get().then(s => (panels = s.panels));
 browser.storage.onChanged.addListener(changes => {
@@ -82,16 +81,6 @@ browser.webRequest.onBeforeSendHeaders.addListener(
   ["blocking", "requestHeaders"]
 );
 
-// Remember where each panel frame ended up, for reload and "open in tab".
-browser.webRequest.onCompleted.addListener(
-  d => {
-    if (!d.documentUrl?.startsWith(EXT)) return;
-    const p = panelForHost(hostOf(d.url));
-    if (p) lastUrl.set(p.id, d.url);
-  },
-  { urls: ["<all_urls>"], types: ["sub_frame"] }
-);
-
 // ---- Open the sidebar on its own ------------------------------------------
 // sidebarAction.open() only works inside a user action, so the first click or
 // keypress in any web page after startup opens the sidebar (once per session;
@@ -101,8 +90,6 @@ let autoOpenDone = false;
 
 browser.runtime.onMessage.addListener(msg => {
   switch (msg?.type) {
-    case "lastUrl":
-      return Promise.resolve(lastUrl.get(msg.id) ?? null);
     case "sidebar-open":
       autoOpenDone = true;
       break;

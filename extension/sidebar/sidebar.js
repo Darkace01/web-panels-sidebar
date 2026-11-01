@@ -144,6 +144,7 @@ function renderStage() {
   $("empty").classList.toggle("show", S.panels.length === 0);
   $("empty").textContent = "No panels yet. Use + on the rail to add one.";
   $("refresh").disabled = !byId(activeId);
+  updateNav();
   for (const [id, f] of frames) f.el.classList.toggle("on", id === activeId);
 }
 
@@ -198,9 +199,54 @@ function ensureFrame(p) {
   iframe.style.zoom = p.zoom || 1;
   $("frames").append(iframe);
   void iframe.offsetWidth; // commit the hidden state so it can fade in
-  f = { el: iframe, last: Date.now() };
+  // url/title/badge come from the page's panel-agent; hist/idx track back/forward
+  f = { el: iframe, last: Date.now(), url: "", title: "", badge: 0, hist: [], idx: -1 };
   frames.set(p.id, f);
+  // Each (re)load, say hello so the page's agent starts reporting to us.
+  iframe.addEventListener("load", () => sendInit(p.id));
   return f;
+}
+
+function sendTo(f, msg) {
+  f.el.contentWindow?.postMessage({ __zs: true, ...msg }, "*");
+}
+
+function sendInit(id) {
+  const f = frames.get(id);
+  const p = byId(id);
+  if (f && p) sendTo(f, { type: "init", dark: !!p.dark, css: p.css || "" });
+}
+
+// Messages from page agents: only accept them from a panel's own frame.
+window.addEventListener("message", e => {
+  const d = e.data;
+  if (!d || d.__zs !== true || d.type !== "state") return;
+  for (const [id, f] of frames) {
+    if (f.el.contentWindow === e.source) return onState(id, f, d);
+  }
+});
+
+function onState(id, f, d) {
+  if (typeof d.url !== "string" || !/^https?:/i.test(d.url)) return;
+  if (d.url !== f.url) {
+    // Work out whether this was a back, a forward, or a new page.
+    if (f.hist[f.idx - 1] === d.url) f.idx--;
+    else if (f.hist[f.idx + 1] === d.url) f.idx++;
+    else {
+      f.hist.splice(f.idx + 1);
+      f.hist.push(d.url);
+      f.idx = f.hist.length - 1;
+    }
+    f.url = d.url;
+  }
+  f.title = String(d.title ?? "").slice(0, 200);
+  if (id === activeId) updateNav();
+}
+
+function updateNav() {
+  const f = frames.get(activeId);
+  $("back").disabled = !(f && f.idx > 0);
+  $("forward").disabled = !(f && f.idx >= 0 && f.idx < f.hist.length - 1);
 }
 
 function openPanel(id) {
@@ -228,18 +274,14 @@ function unloadPanel(id) {
   render();
 }
 
-async function currentUrl(p) {
-  try {
-    return (await browser.runtime.sendMessage({ type: "lastUrl", id: p.id })) || p.url;
-  } catch {
-    return p.url;
-  }
-}
+const currentUrl = p => frames.get(p.id)?.url || p.url;
 
-async function reloadPanel(p) {
+function reloadPanel(p) {
   const f = frames.get(p.id);
   if (!f) return;
-  f.el.src = await currentUrl(p);
+  // The agent knows the real page; fall back to the start page if it isn't there.
+  if (f.url) sendTo(f, { type: "reload" });
+  else f.el.src = p.url;
 }
 
 async function removePanel(id) {
@@ -263,9 +305,18 @@ function goHome(p) {
   if (f) f.el.src = p.url;
 }
 
-async function openInTab(p) {
-  browser.tabs.create({ url: await currentUrl(p) });
+function openInTab(p) {
+  browser.tabs.create({ url: currentUrl(p) });
 }
+
+$("back").onclick = () => {
+  const f = frames.get(activeId);
+  if (f) sendTo(f, { type: "back" });
+};
+$("forward").onclick = () => {
+  const f = frames.get(activeId);
+  if (f) sendTo(f, { type: "forward" });
+};
 
 $("refresh").onclick = e => {
   const p = byId(activeId);
