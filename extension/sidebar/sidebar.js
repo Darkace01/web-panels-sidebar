@@ -156,8 +156,22 @@ function refreshRail() {
 }
 
 let railKey = "";
+let windowId;
+let railOnly = null;
+
+// While no panel is open the sidebar title becomes "... - rail"; the
+// profile's userChrome.css uses that to shrink the sidebar to the icon rail.
+function syncTitle() {
+  const collapsed = !byId(activeId);
+  if (collapsed === railOnly) return;
+  railOnly = collapsed;
+  browser.sidebarAction
+    .setTitle({ title: collapsed ? "Zen Sidebar - rail" : "Zen Sidebar", ...(windowId ? { windowId } : {}) })
+    .catch(() => {});
+}
 
 function render() {
+  syncTitle();
   document.body.dataset.rail = S.railPosition;
   // Only rebuild the rail when its contents change; otherwise just update it.
   const key = JSON.stringify([S.railPosition, S.panels.map(p => [p.id, p.name, p.url, p.icon])]);
@@ -377,6 +391,7 @@ setInterval(() => {
   // Tell the background the sidebar is open, so it doesn't auto-open it again
   // (and doesn't fight a user who closes it).
   browser.runtime.sendMessage({ type: "sidebar-open" }).catch(() => {});
+  windowId = (await browser.windows.getCurrent()).id;
   S = await Store.get();
   if (!S.seeded) {
     // Claim first so a second window doesn't seed again.

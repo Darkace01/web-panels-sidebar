@@ -39,6 +39,8 @@ Then open the `.xpi` from `web-ext-artifacts/` in Zen.
 The extension can't move or resize Firefox's sidebar itself; those are browser settings.
 
 - **The "Zen Sidebar" title bar, the side, and the width** all belong to the browser, so they're set with profile files in `dev-profile/` (a hidden `#sidebar-header`, a default width of about 25% of the window, and `sidebar.position_start=false`). `npm run start` uses them automatically. For your normal profile, close Zen and run `.\scripts\apply-ui-tweaks.ps1`, then restart Zen.
+- With those tweaks applied, closing a panel's view (click its icon again) shrinks the sidebar to just the icon rail, and opening a panel expands it again. Without them, the sidebar keeps its width and shows a hint instead.
+- The tweaks fix the width at about 25% of the window (320 to 480px), so dragging the edge won't resize it.
 - The icon rail itself defaults to the right edge of the sidebar. Dragging the sidebar's edge overrides the default width.
 
 On first run the sidebar opens with one panel: the home page of your default search engine.

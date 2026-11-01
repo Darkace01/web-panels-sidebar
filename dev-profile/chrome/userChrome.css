@@ -1,10 +1,19 @@
-/* zen-sidebar: hide the browser's own "Zen Sidebar" title bar and default to ~1/4 width */
+/* zen-sidebar: hide the browser's own "Zen Sidebar" title bar, default to ~1/4 width,
+   and shrink to just the icon rail when no panel is open */
 #sidebar-header {
   display: none !important;
 }
 
 #sidebar-box {
-  width: 25vw;
-  min-width: 320px;
-  max-width: 480px;
+  width: 25vw !important;
+  min-width: 320px !important;
+  max-width: 480px !important;
+  transition: width .25s ease, min-width .25s ease, max-width .25s ease;
+}
+
+/* The extension sets its title to "Zen Sidebar - rail" while no panel is open */
+#sidebar-box:has(#sidebar-title[value$="- rail"]) {
+  width: 47px !important;
+  min-width: 47px !important;
+  max-width: 47px !important;
 }
