@@ -72,6 +72,7 @@ function renderRail() {
       title: p.name,
       draggable: true,
     });
+    btn.dataset.id = p.id;
     const img = el("img", { alt: "", src: p.icon || originOf(p.url) + "/favicon.ico" });
     img.onload = () => btn.classList.add("has-icon");
     img.onerror = () => btn.classList.remove("has-icon");
@@ -139,16 +140,32 @@ function renderRail() {
 }
 
 function renderStage() {
-  $("empty").hidden = !!byId(activeId);
+  $("empty").classList.toggle("show", !byId(activeId));
   $("empty").textContent = S.panels.length
     ? "Pick a panel from the rail."
     : "No panels yet. Use + on the rail to add one.";
-  for (const [id, f] of frames) f.el.hidden = id !== activeId;
+  for (const [id, f] of frames) f.el.classList.toggle("on", id === activeId);
 }
+
+// Toggle state classes in place so CSS transitions can animate them.
+function refreshRail() {
+  for (const btn of $("rail").querySelectorAll(".btn[data-id]")) {
+    btn.classList.toggle("active", btn.dataset.id === activeId);
+    btn.classList.toggle("loaded", frames.has(btn.dataset.id));
+  }
+}
+
+let railKey = "";
 
 function render() {
   document.body.dataset.rail = S.railPosition;
-  renderRail();
+  // Only rebuild the rail when its contents change; otherwise just update it.
+  const key = JSON.stringify([S.railPosition, S.panels.map(p => [p.id, p.name, p.url, p.icon])]);
+  if (key !== railKey) {
+    railKey = key;
+    renderRail();
+  }
+  refreshRail();
   renderStage();
 }
 
@@ -164,6 +181,7 @@ function ensureFrame(p) {
   });
   iframe.style.zoom = p.zoom || 1;
   $("frames").append(iframe);
+  void iframe.offsetWidth; // commit the hidden state so it can fade in
   f = { el: iframe, last: Date.now() };
   frames.set(p.id, f);
   return f;
