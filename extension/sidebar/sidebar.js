@@ -173,6 +173,8 @@ function syncTitle() {
 function render() {
   syncTitle();
   document.body.dataset.rail = S.railPosition;
+  // Rail-only mode: nothing but the icons (search stays when there are no panels yet).
+  document.body.classList.toggle("collapsed", S.panels.length > 0 && !byId(activeId));
   // Only rebuild the rail when its contents change; otherwise just update it.
   const key = JSON.stringify([S.railPosition, S.panels.map(p => [p.id, p.name, p.url, p.icon])]);
   if (key !== railKey) {
