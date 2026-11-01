@@ -1,0 +1,10 @@
+/* zen-sidebar: hide the browser's own "Zen Sidebar" title bar and default to ~1/4 width */
+#sidebar-header {
+  display: none !important;
+}
+
+#sidebar-box {
+  width: 25vw;
+  min-width: 320px;
+  max-width: 480px;
+}

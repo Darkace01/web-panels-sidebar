@@ -38,12 +38,8 @@ Then open the `.xpi` from `web-ext-artifacts/` in Zen.
 
 The extension can't move or resize Firefox's sidebar itself; those are browser settings.
 
-- **Right side:** the icon rail defaults to the right edge of the sidebar, and `npm run start` launches Zen with `sidebar.position_start=false`. In your normal profile, set `sidebar.position_start` to `false` in `about:config`.
-- **Width:** drag the sidebar's edge once and Zen remembers it. To force roughly a quarter of the window, add this to `chrome/userChrome.css` in your profile (needs `toolkit.legacyUserProfileCustomizations.stylesheets` = `true` in `about:config`):
-
-```css
-#sidebar-box { width: 25vw !important; min-width: 320px; max-width: 480px; }
-```
+- **The "Zen Sidebar" title bar, the side, and the width** all belong to the browser, so they're set with profile files in `dev-profile/` (a hidden `#sidebar-header`, a default width of about 25% of the window, and `sidebar.position_start=false`). `npm run start` uses them automatically. For your normal profile, close Zen and run `.\scripts\apply-ui-tweaks.ps1`, then restart Zen.
+- The icon rail itself defaults to the right edge of the sidebar. Dragging the sidebar's edge overrides the default width.
 
 On first run the sidebar opens with one panel: the home page of your default search engine.
 
